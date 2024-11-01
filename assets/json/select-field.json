@@ -1,0 +1,121 @@
+{
+
+  
+    "almacen_productos": {
+      "groupby": [
+        "CATEGORIA_COMPRAS", "CATEGORIA_INVENTARIO", "UBICACION", "PROVEEDOR",
+         "ROTACION", "TIPO", "ESTADO", "DEMANDA", "CONDICION_ALMACENAMIENTO", "FORMATO", 
+         "TIPO_PRECIO", "DURABILIDAD", "PROVEEDURIA", "PRESENTACION_VISUAL", "EMBASE_AMBIENTAL", 
+         "RESPONSABILIDAD_AMBIENTAL", "MONEDA","ACTIVE","F.VENCIMIENTO_MENSUAL","F.VENCIMIENTO_ANUAL",
+         "RANGO_PRECIO_COMPRA","RANGO_PRECIO_DISTRIBUCION","RANGO_STOCK"
+      ],
+      "categoria_compras": [
+        "VIVERES", "VERDURAS", "FRUTAS", "PRODUCTOS DE LIMP", "CARNES Y LACTEOS", "SNACKS"
+      ],
+      "categoria_inventario": [
+        "BEBIDAS CALIENTES", "LÁCTEOS Y DULCES", "PASTAS Y HARINAS", "SALSAS Y GRASAS", "HIGIENE PERSONAL", "POSTRES_REPOSTERIA", "CEREALES Y GRANOS", "CONDIMENTOS", "ALIMENTOS ENLATADOS", "CONGELADOS", "BEBIDAS", "PANADERÍA", "OTROS", "PRODUCTOS DE LIMPIEZA", "FRUTAS", "SNACKS", "MERIENDAS Y APERITIVOS", "CARNES", "VERDURAS"
+      ],
+      "ubicacion": [
+        "CUSCO JUANCA", "CUSCO ALBERTO", "CUSCO EMERSON", "CUSCO DEIVIS", "CONGOMIRE", "HUITO PITUMARCA", "CUSCO ARTURO", "CHILLCA", "ANANTA", "HUAMPO", "MACHURACAY"
+      ],
+      "PROVEEDOR": [
+        "MARO GROUP SAC", "LA CANASTA", "PLAZA VEA", "SAN PEDRO SILVIA", "OTRO"
+      ],
+      "rotacion": [
+        "ALTA ROTACIÓN", "ROTACIÓN MEDIA", "BAJA ROTACIÓN"
+      ],
+      "tipo": [
+        "PERECIBLES", "NO PERECIBLE"
+      ],
+      "estado": [
+        "DISPONIBLE", "VENCIDO", "AGOTADO", "INACTIVO", "BAJO_STOCK", "MUY_CARO", "EN_PROMOCIÓN", "NUEVO", "DAÑADO", "POR_EXPIRAR", "REUTILIZABLE"
+      ],
+      "demanda": [
+        "ALTA DEMANDA", "DEMANDA ESTABLE", "BAJA DEMANDA"
+      ],
+      "condicion_almacenamiento": [
+        "ALMACENAMIENTO EN REFRIGERACIÓN", "ALMACENAMIENTO A TEMPERATURA AMBIENTE", "ALMACENAMIENTO CONGELADO"
+      ],
+      "formato": [
+        "UNIDAD", "PAQUETE", "ALMACÉN A GRANEL"
+      ],
+      "tipo_precio": [
+        "BAJO", "MEDIO", "ALTO"
+      ],
+      "durabilidad": [
+        "CORTA DURABILIDAD", "MEDIA DURABILIDAD", "LARGA DURABILIDAD"
+      ],
+      "proveeduria": [
+        "PROVEEDOR ÚNICO", "MÚLTIPLES PROVEEDORES"
+      ],
+      "presentacion_visual": [
+        "ATRATIVO", "NEUTRO", "NO ATRACTIVO"
+      ],
+      "embase_ambiental": [
+        "ENVASE RECICLABLE", "ENVASE NO RECICLABLE", "ENVASE BIODEGRADABLE"
+      ],
+      "responsabilidad_ambiental": [
+        "ECOLÓGICOS", "NO ECOLÓGICOS"
+      ],
+      "moneda": [
+        "USD", "PEN"
+      ],
+      "active": [
+       "true","false"
+      ]
+    },
+    "almacen_equipos": {
+      "categoria": [
+        "DORMITORIO", "MARKETING", "CAMPING", "COMEDOR", "MENAJE", "PICNIC", "ESCALADA", "PESCA", "PRIMEROS_AUXILIOS", "SIN_CLASIFICAR"
+      ],
+      "propietario": [
+        "JUANCARLOS", "ROGER", "ANDES RACE", "BTU", "ANDEAN LODGES"
+      ],
+      "ubicacion": [
+        "CUSCO JUANCA", "CUSCO ALBERTO", "CUSCO EMERSON", "CUSCO DEIVIS", "CONGOMIRE", "HUITO PITUMARCA", "CUSCO ARTURO", "CHILLCA", "ANANTA", "HUAMPO", "MACHURACAY"
+      ],
+      "estado": [
+        "DISPONIBLE", "EN USO", "AGOTADO", "INACTIVO", "BAJO STOCK", "MUY CARO", "EN REPARACIÓN", "NUEVO", "DAÑADO", "POR MANTENIMIENTO", "NUEVO", "USADO", "REPARANDO", "DESCARTADO"
+      ],
+      "color": [
+        "FFA500", "FF4500", "FFD700", "8B0000", "FF6347", "00FF00", "32CD32", "ADFF2F", "FFFF00", "FFDAB9", "00BFFF", "1E90FF", "4169E1", "0000FF", "800080", "EE82EE", "FFC0CB", "FF69B4", "FFB6C1", "DDA0DD", "FF00FF", "FF1493", "FF7F50", "FF8C00", "6A5ACD", "7FFF00", "FFFACD", "F0E68C", "E6E6FA", "FFF0F5", "FFB6C1", "F4A460", "BC8F8F", "D2691E", "FF7F50", "8FBC8F", "F0FFF0", "FFF0F5", "B0C4DE", "00CED1", "FFFAFA"
+      ],
+      "nivel_uso": [
+        "USO FRECUENTE", "USO OCACIONAL", "NO USADO"
+      ],
+      "mantenimeinto": [
+        "MANTENIMIENTO PREVENTIVO", "MANTENIMIENTO CORRECTIVO", "SIN MANTENIMIENTO REQUERIDO"
+      ],
+      "tipo_porveedor": [
+        "PROVEEDOR LOCAL", "PROVEEDOR NACIONAL", "PROVEEDOR INTERNACIONAL"
+      ],
+      "material": [
+        "METAL", "PLÁSTICO", "MADERA", "TEXTIL"
+      ],
+      "riesgo": [
+        "BAJO RIESGO", "MEDIO RIESGO", "ALTO RIESGO"
+      ],
+      "durabiliad": [
+        "ALTA DURABILIDAD", "DURABILIDAD MEDIA", "BAJA DURABILIDAD"
+      ],
+      "origen_equipo": [
+        "NACIONAL", "IMPORTADO", "ARTESANAL"
+      ],
+      "capacidad_de_carga": [
+        "LIGERO", "MEDIO", "PESADO"
+      ],
+      "dimensiones_equipo": [
+        "TAMAÑO PEQUEÑO", "TAMAÑO MEDIO", "TAMAÑO GRANDE"
+      ],
+      "precio_relativo": [
+        "EQUIPO ECONÓMICO", "EQUIPO DE GAMA MEDIA", "EQUIPO DE ALTA GAMA"
+      ],
+      "responsabilidad_ambiental": [
+        "ECOLÓGICOS", "NO ECOLÓGICOS"
+      ],
+      "moneda": [
+        "USD", "PEN"
+      ]
+    }
+  }
+  

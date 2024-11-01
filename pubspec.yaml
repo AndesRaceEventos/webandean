@@ -1,0 +1,132 @@
+name: webandean
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  pocketbase: ^0.18.1
+  provider: ^6.1.2
+  shared_preferences: ^2.3.1
+  cached_network_image: ^3.4.0
+  http: ^1.2.2
+  sqflite: ^2.3.3+1
+  path: ^1.8.3 #Para SQL LITE Nos sirve para unir elementos. trabaja con SQL lite 
+  path_provider: ^2.1.2 #para SQL LITE encontrar ubicaciones de uso común en el sistema de archivos
+  pdf: ^3.11.1 #exportar pdf
+  excel: ^4.0.3  #exportar excel
+  open_filex: ^4.3.4  #abrir archivo y requiere de path provider
+  flutter_tts: ^4.0.2 #^3.8.5 # flutter_tts: ^4.0.2 #de text a voz 
+  speech_to_text: ^6.6.2
+  image_picker: ^1.1.2
+  qr_flutter: ^4.1.0
+  flutter_barcode_scanner: ^2.0.0 #lector MOVIL 
+  mobile_scanner: ^4.0.1 #mobile_scanner: ^6.0.1 #lector WEB mobile_scanner: ^4.0.1
+  # mobile_scanner: ^6.0.1
+  # widget_circular_animator: ^1.0.0 #Circulo Orbital con esferas.
+  # fade_out_particle: ^1.2.1 #Animacion Qr LEctor 
+  simple_ripple_animation: ^0.0.9 #circulo palpitante
+  # quickalert: ^1.0.2 #ALerta SHow Dialog 
+  delayed_display: ^2.0.0 #EFECTO opacity al iniciar la pantalla
+  syncfusion_flutter_charts: ^26.2.8
+  # vibration: ^1.9.0 #vibrar al snacear un codgio qr
+  audioplayers: ^6.1.0 #reproducir tonpo al scanear QR
+  flutter_keyboard: ^2.0.3
+  flutter_svg: ^2.0.10+1
+  lottie: ^3.1.2
+  flutter_expanded_tile: ^0.4.0
+  timelines: ^0.1.0 #LINEA DE TIEMPO 
+  timezone: ^0.9.4 #HORARIO LOCAL 
+  file_picker: ^8.0.7 #SUbir Archivos
+  flutter_pdfview: ^1.3.2 #Previsualizar PDF antes de subirlo. 
+  signature: ^5.5.0 #Poder Firma , efecto pizarra 
+  screenshot: ^3.0.0 
+  image_gallery_saver: ^2.0.3 #Acceso a Galleria 
+  permission_handler: ^11.3.1 #PErmisos de Galleria.SOLO EN ANDROID
+  banner_carousel: ^1.2.1 #Para Sponser list
+  url_launcher: ^6.3.0
+  google_fonts: ^6.2.1
+  responsive_table: ^0.2.0+2
+  gallery_image_viewer: ^1.2.0
+  flutter_widget_from_html: ^0.15.2
+  multi_select_flutter: ^4.1.3 #para formulario y selccionesm ultiples. 
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.1
+  # flutter_app_name: ^0.1.1
+
+flutter_launcher_icons:
+  android: true #"launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icon/appstore.png"
+  adaptive_icon_background: "assets/icon/appstore.png"
+  adaptive_icon_foreground: "assets/icon/appstore.png"
+  
+  web:
+    generate: true
+    image_path: "assets/icon/appstore.png"  # Ruta a la imagen de tu ícono
+    background_color: "#000000"             # Color de fondo negro
+    theme_color: "#000000"                  # Color del tema negro
+  windows:
+    generate: true
+    image_path: "assets/icon/appstore.png"
+  macos:
+    generate: true
+    image_path: "assets/icon/appstore.png"
+  
+  flutter_lints: ^4.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+ 
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  assets:
+      - assets/img/
+      - assets/loties/
+      - assets/svg/
+      - assets/song/
+      - assets/icon/
+      - assets/json/
+  # example:
+  fonts:
+    - family: Quicksand
+      fonts:
+        - asset: assets/fonts/Quicksand-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Quicksand-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Quicksand-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Quicksand-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Quicksand-SemiBold.ttf
+          weight: 600
+ 

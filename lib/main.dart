@@ -7,13 +7,21 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:webandean/local_storage/shared_preferences/shaerd_preferences.dart';
 import 'package:webandean/pages/home/orientation_phone_page.dart';
 import 'package:webandean/pages/home/orientation_web_page.dart';
+import 'package:webandean/provider/cache/files/files_procesisng.dart';
 import 'package:webandean/provider/cache/json_loading/provider_json.dart';
 import 'package:webandean/provider/cache/menuWeb/menu_state.dart';
+import 'package:webandean/provider/cache/offlineState/provider_offline_state.dart';
 import 'package:webandean/provider/cache/qr_lector/qr_lector_provider.dart';
 import 'package:webandean/provider/cache/start%20page/current_page.dart';
-import 'package:webandean/provider/mouse%20region/provider_hover_web.dart';
-import 'package:webandean/provider/offlineState/provider_offline_state.dart';
+import 'package:webandean/provider/cache/mouse%20region/provider_hover_web.dart';
+import 'package:webandean/provider/entregas/provider_entregas_generales.dart';
+import 'package:webandean/provider/entregas/provider_lista_equipo.dart';
+import 'package:webandean/provider/entregas/provider_lista_producto.dart';
+import 'package:webandean/provider/equipo/provider_equipo.dart';
+import 'package:webandean/provider/itinerarios/provider_itinerarios.dart';
+import 'package:webandean/provider/personal/provider_personal.dart';
 import 'package:webandean/provider/producto/provider_producto.dart';
+import 'package:webandean/provider/sunat%20/provider_tipo_cambio.dart';
 import 'package:webandean/utils/colors/assets_colors.dart';
 import 'package:webandean/utils/speack/assets_speack.dart';
 
@@ -52,7 +60,11 @@ class AppState extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        
+        //TipoCambioProvider
+        ChangeNotifierProvider(create: (context) => TipoCambioProvider(), lazy: false,),
+        ChangeNotifierProvider(
+          create: (context)=> FilesProvider()
+        ),
         ChangeNotifierProvider(
           create: (context) => HoverProvider(),
         ),
@@ -70,16 +82,45 @@ class AppState extends StatelessWidget {
          ChangeNotifierProvider(
           create: (context) => QrLectorProvider(),
         ),
-        //RUNNER OfflineStateProvider
+        //OfflineStateProvider
         ChangeNotifierProvider(
           create: (context) => OfflineStateProvider(),
           lazy: false,
         ),
-        //USUARIO CACHE
+        //PRODUCTO CACHE
         ChangeNotifierProvider(
           create: (context) => TProductosAppProvider(),
           lazy: false,
         ),
+        //EQUIPO 
+        ChangeNotifierProvider(
+          create: (context) => TEquipoAppProvider(),
+          lazy: false,
+        ),
+         //ENTREGAS EQUIPO PRODUCTO  
+        ChangeNotifierProvider(
+          create: (context) => TListaProductosAppProvider(),
+          lazy: false,
+        ),
+         ChangeNotifierProvider(
+          create: (context) => TListaEquipoAppProvider(),
+          lazy: false,
+        ),
+        //TItinerariosAppProvider 
+         ChangeNotifierProvider(
+          create: (context) => TItinerariosAppProvider(),
+          lazy: false,
+        ), 
+        //TPersonalAppProvider
+        ChangeNotifierProvider(
+          create: (context) => TPersonalAppProvider(),
+          lazy: false,
+        ), 
+        //TEntregasAppProvider
+         ChangeNotifierProvider(
+          create: (context) => TEntregasAppProvider(),
+          lazy: false,
+        ), 
       ],
       builder: (context, _) {
         return const MyApp();

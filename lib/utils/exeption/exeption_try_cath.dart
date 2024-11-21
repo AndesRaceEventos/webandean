@@ -5,9 +5,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:webandean/provider/cache/files/files_procesisng.dart';
 import 'package:webandean/utils/dialogs/assets_dialog.dart';
-import 'package:webandean/utils/files/assets-svg.dart';
+import 'package:webandean/utils/files%20assset/assets-svg.dart';
 import 'package:webandean/utils/speack/assets_speack.dart';
 
 // MÉTODOS DE SOPORTE
@@ -142,7 +144,7 @@ Future<void> saveExecuteTimeout({
       final message = isCreating 
           ? 'El registro de "$nombre" se ha creado correctamente.'
           : 'El registro de "$nombre" se ha actualizado correctamente.';
-
+      
       TextToSpeechService().speak(message);
       AssetAlertDialogPlatform.show(
         context: context,
@@ -150,6 +152,7 @@ Future<void> saveExecuteTimeout({
         message: message,
         child: AppSvg().fileSvg
       );
+      context.read<FilesProvider>().clearAllFiles();//Limpiar los Files selecioandos
     });
   } catch (e) {
      final  message = 'Error';

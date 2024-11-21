@@ -65,6 +65,15 @@
       ]
     },
     "almacen_equipos": {
+      "groupby": [
+        "CATEGORIA", "PROPIETARIO", "UBICACION", "ESTADO_OPERACIONAL", "COLOR",
+        "DEMANDA", "TIPO_PRECIO", "PROVEEDURIA", "NIVEL_USO", "MANTENIMIENTO",
+        "TIPO_PROVEEDOR", "MATERIAL", "RIESGO", "DURABILIDAD", "ORIGEN_EQUIPO",
+        "CAPACIDAD_DE_CARGA", "DIMENSIONES_EQUIPO", "PRECIO_RELATIVO", "MONEDA","ACTIVE",
+        "F_ULTIMO_MANTENIMIENTO", "F_PROXIMO_MANTENIMIENTO", "F_RETIRO",
+        "F_ULTIMO_MANTENIMIENTO_MENSUAL", "F_PROXIMO_MANTENIMIENTO_MENSUAL", "F_RETIRO_MENSUAL",
+        "RANGO_COSTO_MANTENIMIENTO"
+      ],
       "categoria": [
         "DORMITORIO", "MARKETING", "CAMPING", "COMEDOR", "MENAJE", "PICNIC", "ESCALADA", "PESCA", "PRIMEROS_AUXILIOS", "SIN_CLASIFICAR"
       ],
@@ -74,11 +83,20 @@
       "ubicacion": [
         "CUSCO JUANCA", "CUSCO ALBERTO", "CUSCO EMERSON", "CUSCO DEIVIS", "CONGOMIRE", "HUITO PITUMARCA", "CUSCO ARTURO", "CHILLCA", "ANANTA", "HUAMPO", "MACHURACAY"
       ],
-      "estado": [
+      "estado_operacional": [
         "DISPONIBLE", "EN USO", "AGOTADO", "INACTIVO", "BAJO STOCK", "MUY CARO", "EN REPARACIÓN", "NUEVO", "DAÑADO", "POR MANTENIMIENTO", "NUEVO", "USADO", "REPARANDO", "DESCARTADO"
       ],
       "color": [
         "FFA500", "FF4500", "FFD700", "8B0000", "FF6347", "00FF00", "32CD32", "ADFF2F", "FFFF00", "FFDAB9", "00BFFF", "1E90FF", "4169E1", "0000FF", "800080", "EE82EE", "FFC0CB", "FF69B4", "FFB6C1", "DDA0DD", "FF00FF", "FF1493", "FF7F50", "FF8C00", "6A5ACD", "7FFF00", "FFFACD", "F0E68C", "E6E6FA", "FFF0F5", "FFB6C1", "F4A460", "BC8F8F", "D2691E", "FF7F50", "8FBC8F", "F0FFF0", "FFF0F5", "B0C4DE", "00CED1", "FFFAFA"
+      ],
+      "demanda": [
+        "ALTA DEMANDA", "DEMANDA ESTABLE", "BAJA DEMANDA"
+      ],
+      "tipo_precio":[
+        "BAJO", "MEDIO", "ALTO"
+      ],
+      "proveeduria": [
+        "PROVEEDOR ÚNICO", "MÚLTIPLES PROVEEDORES"
       ],
       "nivel_uso": [
         "USO FRECUENTE", "USO OCACIONAL", "NO USADO"
@@ -86,7 +104,7 @@
       "mantenimeinto": [
         "MANTENIMIENTO PREVENTIVO", "MANTENIMIENTO CORRECTIVO", "SIN MANTENIMIENTO REQUERIDO"
       ],
-      "tipo_porveedor": [
+      "tipo_proveedor": [
         "PROVEEDOR LOCAL", "PROVEEDOR NACIONAL", "PROVEEDOR INTERNACIONAL"
       ],
       "material": [
@@ -95,7 +113,7 @@
       "riesgo": [
         "BAJO RIESGO", "MEDIO RIESGO", "ALTO RIESGO"
       ],
-      "durabiliad": [
+      "durabilidad": [
         "ALTA DURABILIDAD", "DURABILIDAD MEDIA", "BAJA DURABILIDAD"
       ],
       "origen_equipo": [
@@ -110,12 +128,79 @@
       "precio_relativo": [
         "EQUIPO ECONÓMICO", "EQUIPO DE GAMA MEDIA", "EQUIPO DE ALTA GAMA"
       ],
-      "responsabilidad_ambiental": [
-        "ECOLÓGICOS", "NO ECOLÓGICOS"
-      ],
       "moneda": [
         "USD", "PEN"
+      ],
+      "active": [
+        "true","false"
+       ]
+    },
+    "almacen_lista_productos" : {
+      "groupby": [
+        "ACTIVE", "IDPROGRAMAAPU", "CANTIDADPAX", "CANTIDADGUIA", 
+         "UPDATED","CREATED","NOMBRE"
+      ],
+      "active": [
+        "true","false"
+       ],
+      "nombre": [
+          "1D ESTÁNDAR", "1D VEGETARIANO", "1D CELIACO", "1D NO GLUTEN", "1D VEGANO", 
+          "2D1N ESTÁNDAR", "2D1N VEGETARIANO", "2D1N CELIACO", "2D1N NO GLUTEN", "2D1N VEGANO", 
+          "3D2NA ESTÁNDAR", "3D2NA VEGETARIANO", "3D2NA CELIACO", "3D2NA NO GLUTEN", "3D2NA VEGANO", 
+          "3D2NB ESTÁNDAR", "3D2NB VEGETARIANO", "3D2NB CELIACO", "3D2NB NO GLUTEN", "3D2NB VEGANO", 
+          "4D2N ESTÁNDAR", "4D2N VEGETARIANO", "4D2N CELIACO", "4D2N NO GLUTEN", "4D2N VEGANO", 
+          "5D4N ESTÁNDAR", "5D4N VEGETARIANO", "5D4N CELIACO", "5D4N NO GLUTEN", "5D4N VEGANO", 
+          "6D5N ESTÁNDAR", "6D5N VEGETARIANO", "6D5N CELIACO", "6D5N NO GLUTEN", "6D5N VEGANO", 
+          "7D6N ESTÁNDAR", "7D6N VEGETARIANO", "7D6N CELIACO", "7D6N NO GLUTEN", "7D6N VEGANO"
+        ]
+    },
+    "almacen_lista_equipos" : {
+      "groupby": [
+        "ACTIVE", "IDPROGRAMAAPU", "CANTIDADPAX", "CANTIDADGUIA", 
+         "UPDATED","CREATED","NOMBRE"
+      ],
+      "active": [
+        "true","false"
+       ],
+      "nombre": [
+        "1D ESTÁNDAR", "1D HANE TOURS", "1D CONDOR TRAVEL", "1D VIP", 
+        "2D1N ESTÁNDAR", "2D1N HANE TOURS", "2D1N CONDOR TRAVEL", "2D1N VIP", 
+        "3D2NA ESTÁNDAR", "3D2NA HANE TOURS", "3D2NA CONDOR TRAVEL", "3D2NA VIP", 
+        "3D2NB ESTÁNDAR", "3D2NB HANE TOURS", "3D2NB CONDOR TRAVEL", "3D2NB VIP", 
+        "4D2N ESTÁNDAR", "4D2N HANE TOURS", "4D2N CONDOR TRAVEL", "4D2N VIP", 
+        "5D4N ESTÁNDAR", "5D4N HANE TOURS", "5D4N CONDOR TRAVEL", "5D4N VIP", 
+        "6D5N ESTÁNDAR", "6D5N HANE TOURS", "6D5N CONDOR TRAVEL", "6D5N VIP", 
+        "7D6N ESTÁNDAR", "7D6N HANE TOURS", "7D6N CONDOR TRAVEL", "7D6N VIP"
       ]
+
+    },
+    "programa_apu" : {
+      "groupby": [
+        "ACTIVE","TIPO_SALIDA", "UPDATED","CREATED"
+      ],
+      "active": [
+        "true","false"
+       ],
+       "tipo_salida": [
+        "PRIVADA", "FIJA"
+       ]
+    },
+    "operaciones_personal" : {
+      "groupby": [
+        "ACTIVE", "UPDATED","CREATED","ROL"
+      ],
+      "active": [
+        "true","false"
+       ]
+    },
+    "almacen_entregas_generales" : {
+      "groupby": [
+        "ACTIVE", "UPDATED", "CREATED", "IDRESERVA",
+        "IDPERSONAL", "IDLISTACOMPRA", "IDLISTAEQUIPOS"
+      ],
+      "active": [
+        "true","false"
+       ]
     }
   }
   

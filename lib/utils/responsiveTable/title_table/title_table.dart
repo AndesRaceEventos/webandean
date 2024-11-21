@@ -29,24 +29,26 @@ class TitleTableSlected extends StatelessWidget {
         children: [
          istransition ?  AppIconButon(child: Icon(Icons.search_outlined, color: AppColors.menuTheme,)) : SizedBox(),
           SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              H1Text(
-                // fontSize: 25,
-                color: AppColors.menuTheme,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                H1Text(
+                  // fontSize: 25,
+                  color: AppColors.menuTheme,
+                    height: 1,
+                    text:
+                        '${(_selectedProduct == null || _selectedProduct == 'Todos') ? menuProvider.selectedTitle : _selectedProduct}'
+                            .toUpperCase(),
+                    textAlign: TextAlign.center),
+                P2Text(
                   height: 1,
-                  text:
-                      '${(_selectedProduct == null || _selectedProduct == 'Todos') ? menuProvider.selectedTitle : _selectedProduct}'
-                          .toUpperCase(),
-                  textAlign: TextAlign.center),
-              P2Text(
-                height: 1,
-                fontSize: 11,
-                text: '${listProductos.length} registros',
-                color: AppColors.menuTheme,
-              ),
-            ],
+                  fontSize: 11,
+                  text: '${listProductos.length} registros',
+                  color: AppColors.menuTheme,
+                ),
+              ],
+            ),
           ),
         ],
       ),

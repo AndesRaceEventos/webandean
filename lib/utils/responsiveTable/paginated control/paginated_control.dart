@@ -28,6 +28,8 @@ class PaginationControls extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           DropdownButton<int>(
+            padding: EdgeInsets.all(0),
+            isDense: true,
             iconEnabledColor: Colors.black,
             value: itemsPerPage,
             items: itemsPerPageOptions
@@ -50,7 +52,7 @@ class PaginationControls extends StatelessWidget {
                 ? () => onPageChanged?.call(currentPage - 1)
                 : null,
           ),
-          Text("$currentPage - $itemsPerPage of $totalItems"),
+          Text("$currentPage - $itemsPerPage de $totalItems"),
           IconButton(
             icon: Icon(Icons.arrow_forward_ios, size: 16),
             onPressed: currentPage < totalPages

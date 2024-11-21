@@ -38,4 +38,24 @@ class JsonLoadProvider with ChangeNotifier {
     _optionSeleccionado = producto;
     notifyListeners(); // Notificar a los oyentes sobre el cambio de selección
   }
+
+
+
+
+
+  ///SCROlLEABLE OPTIONS : IMPORTANTE PARA USAR EL SCROOL DE LAS OPCIONES 
+  bool _isScroll = true;
+
+  bool get isScroll => _isScroll;
+
+  // void toggleScroll() {
+  //   _isScroll = !_isScroll;
+  //   print(_isScroll);
+  //   notifyListeners();
+  // }
+
+  void setScroll(bool value) {
+    _isScroll = value;
+    notifyListeners();
+  }
 }

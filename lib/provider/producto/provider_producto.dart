@@ -60,7 +60,7 @@ class TProductosAppProvider with ChangeNotifier {
     });                 
   }
 
-
+bool hasUpdates = false; // Variable para rastrear si hubo actualizaciones
  //GET.:  Método para obtener Respuesta
  Future<void> getProvider({bool isrethrow = false }) async {
   try {
@@ -75,14 +75,28 @@ class TProductosAppProvider with ChangeNotifier {
       );
 
      if (response.isEmpty) {
-        ExceptionClass.handleException(Exception(), 'No se obtuvieron productos.');
+        ExceptionClass.handleException(Exception(), 'No se obtuvieron registros para tu solicitud. Datos actuales conservados.');
+        hasUpdates = false;
+        notifyListeners();
         return;// Detenemos el flujo aquí.
       }
-
-    // Si hay productos, se procesan y se actualiza la lista.
+    
+    // // Si hay productos, se procesan y se actualiza la lista.
+    // List<TProductosAppModel> productos = TProductosApp.processResponse(response);
+    // listProductos.clear();
+    // listProductos.addAll(productos);
+    // notifyListeners();
+    // Procesa la respuesta y verifica si los datos cambiaron
     List<TProductosAppModel> productos = TProductosApp.processResponse(response);
-    listProductos.clear();
-    listProductos.addAll(productos);
+    if (listProductos.length != productos.length || !listProductos.toSet().containsAll(productos.toSet())) {
+      // Actualiza la lista solo si hay cambios
+      listProductos.clear();
+      listProductos.addAll(productos);
+      hasUpdates = true;
+    } else {
+      // Si no hubo cambios, marca `hasUpdates` como falso
+      hasUpdates = false;
+    }
     notifyListeners();
   }  catch (e) {
    // Lanza de nuevo para que `refreshProductos` lo capture si es necesario.
@@ -104,9 +118,12 @@ Future<void> refreshProvider() async {
   notifyListeners();
   await ExceptionClass.tryCathCustom(
     task: () async {
-     await getProvider(isrethrow: true);
-     await Future.delayed(Duration(seconds: 1),() {
-       TextToSpeechService().speak('${listProductos.length} registros actualizados');});
+     await getProvider(isrethrow: true).then((_){
+     // Solo lee el mensaje si hubo actualizaciones
+        if (hasUpdates) {
+          TextToSpeechService().speak('${listProductos.length} registros actualizados');
+        } 
+     });
     }, 
     onFinally: () {
        isRefresh = false;
@@ -123,94 +140,99 @@ Future<void> refreshProvider() async {
     //Coleciones 
     List<TProductosAppModel>? listaMarcas,
     //IMAGES
-    List<Uint8List>? imagen,
+    List<Uint8List>? fileImagen,
+    List<Uint8List>? filePdf,
     //DOCUMENTOS
+    required List<String> imgString,
+    required List<String> pdfString,
 
     //Generico
-    String? id,
+    required String? id,
     required String qr,
     required String categoriaCompras,
     required String categoriaInventario,
-    String? ubicacion,
+    required String ubicacion,
     required List<String> proveedor,
-    String? rotacion,
+    required String rotacion,
     required String nombre,
     required String intUndMedida,
     required String outUndMedida,
     required double intPrecioCompra,
     required double outPrecioDistribucion,
-    String? idMenu,
-    String? tipo,
-    DateTime? fechaVencimiento,
-    String? estado,
-    String? demanda,
-    String? condicionAlmacenamiento,
-    String? formato,
-    String? tipoPrecio,
-    String? durabilidad,
-    String? proveeduria,
-    String? presentacionVisual,
-    String? embaseAmbiental,
-    String? responsabilidadAmbiental,
-    double? cantidadEnStock,
-    double? cantidadNuevos,
-    double? cantidadRutilizables,
-    double? cantidadVencidos,
-    double? cantidadMalogrados,
-    String? observacion,
-    String? html,
-    String? moneda,
-    bool? active,
+    required String? idMenu,
+    required String tipo,
+    required DateTime fechaVencimiento,
+    required String estado,
+    required String demanda,
+    required String condicionAlmacenamiento,
+    required String formato,
+    required String tipoPrecio,
+    required String durabilidad,
+    required String proveeduria,
+    required String presentacionVisual,
+    required String embaseAmbiental,
+    required String responsabilidadAmbiental,
+    required double cantidadEnStock,
+    required double cantidadCritica,
+    required double cantidadOptima,
+    required double cantidadMaxima,
+    required double cantidadMalogrados,
+    required String observacion,
+    required String moneda,
+    required bool active,
+
   }) async {
     isSyncing = true;
     notifyListeners();
      await ExceptionClass.tryCathCustom(
       task: () async {
          TProductosAppModel data = TProductosAppModel(
-        id: '',
+        id: id ?? '',
         qr: qr,
         categoriaCompras: categoriaCompras,
         categoriaInventario: categoriaInventario,
-        ubicacion: ubicacion!,
+        ubicacion: ubicacion,
         proveedor: proveedor,
-        rotacion: rotacion!,
+        rotacion: rotacion,
         nombre: nombre,
         listaMarcas: listaMarcas,
         intUndMedida: intUndMedida,
         outUndMedida: outUndMedida,
         intPrecioCompra: intPrecioCompra,
         outPrecioDistribucion: outPrecioDistribucion,
-        idMenu: idMenu!,
-        tipo: tipo!,
-        // imagen: imagen,
-        fechaVencimiento: fechaVencimiento!,
-        estado: estado!,
-        demanda: demanda!,
-        condicionAlmacenamiento: condicionAlmacenamiento!,
-        formato: formato!,
-        tipoPrecio: tipoPrecio!,
-        durabilidad: durabilidad!,
-        proveeduria: proveeduria!,
-        presentacionVisual: presentacionVisual!,
-        embaseAmbiental: embaseAmbiental!,
-        responsabilidadAmbiental: responsabilidadAmbiental!,
-        cantidadEnStock: cantidadEnStock!,
-        cantidadCritica: cantidadNuevos!,
-        cantidadOptima: cantidadRutilizables!,
-        cantidadMaxima: cantidadVencidos!,
-        cantidadMalogrados: cantidadMalogrados!,
-
-        observacion: observacion!,
-        html: html!,
-        moneda: moneda!,
-        active: active!,
+        idMenu: idMenu ?? "",
+        tipo: tipo,
+        fechaVencimiento: fechaVencimiento,
+        estado: estado,
+        demanda: demanda,
+        condicionAlmacenamiento: condicionAlmacenamiento,
+        formato: formato,
+        tipoPrecio: tipoPrecio,
+        durabilidad: durabilidad,
+        proveeduria: proveeduria,
+        presentacionVisual: presentacionVisual,
+        embaseAmbiental: embaseAmbiental,
+        responsabilidadAmbiental: responsabilidadAmbiental,
+        cantidadEnStock: cantidadEnStock,
+        cantidadCritica: cantidadCritica,
+        cantidadOptima: cantidadOptima,
+        cantidadMaxima: cantidadMaxima,
+        cantidadMalogrados: cantidadMalogrados,
+        
+        observacion: observacion,
+        // html: html,
+        moneda: moneda,
+        active: active,
+        
+        imagen: imgString,
+        pdf: pdfString,
       );
       // Determinar si es creación o actualización
        final isCreating = data.id == null || data.id.isEmpty;
           // Guardar con POST o PUT según corresponda
           final operation = isCreating
-          ? TProductosApp.postToPoketbase(data: data)
-          : TProductosApp.putToPoketbase(id: data.id, data: data);
+          ? TProductosApp.postToPoketbase(data: data, imagenes: fileImagen, pdfs: filePdf)
+          : TProductosApp.putToPoketbase(id: data.id, data: data, imagenes: fileImagen, pdfs: filePdf);
           // Aplicar timeout con manejo interno de errores
           await ExceptionClass().saveExecuteTimeout(
             context: context,
@@ -219,7 +241,7 @@ Future<void> refreshProvider() async {
             secondsDuration: 60,//const Duration(seconds: 60),
             isCreating: isCreating,
           );
-     
+
       }, 
       onFinally: (){
         isSyncing = false;
@@ -234,7 +256,8 @@ Future<void> refreshProvider() async {
     //Coleciones 
     List<TProductosAppModel>? listaMarcas,
     //IMAGES
-    List<Uint8List>? imagen,
+    List<Uint8List>? fileImagen,
+     List<Uint8List>? filePdf,
     //DOCUMENTOS
   required TProductosAppModel data,
   }) async {
@@ -246,8 +269,8 @@ Future<void> refreshProvider() async {
           final isCreating = data.id == null || data.id.isEmpty;
           // Guardar con POST o PUT según corresponda
           final operation = isCreating
-          ? TProductosApp.postToPoketbase(data: data)
-          : TProductosApp.putToPoketbase(id: data.id, data: data);
+          ? TProductosApp.postToPoketbase(data: data , imagenes: fileImagen, pdfs: filePdf)
+          : TProductosApp.putToPoketbase(id: data.id, data: data, imagenes: fileImagen, pdfs: filePdf );
           // Aplicar timeout con manejo interno de errores
           await ExceptionClass().saveExecuteTimeout(
             context: context,
@@ -382,14 +405,49 @@ Future<void> refreshProvider() async {
   }
 
   ///FILTWR POKETBASE 
-   String? filter;
-   String? sort;
-   String? expand;
+   String? filter = '';
+   String? sort   = '';
+   String? expand = '';
   
   // Métodos auxiliares para ejemp
   List<String> filterslist = []; 
  
 
+
+// Función de ejemplo para obtener datos de Pocketbase
+Map<String, dynamic> getPoketbase() {
+   filterslist = showDropdowns.keys.toList();
+  return {
+    "filter": filterslist,
+    "sort": ['-updated','nombre']..addAll(showDropdowns.keys.toList()),
+    "expand": ['id_menu'],
+  };
+}
+
+  void setExpand({String? newExpand}){
+    expand = newExpand;
+    notifyListeners();
+  }
+
+   void setFilter({String? newFilter}){
+    filter = newFilter;
+    notifyListeners();
+  }
+  void setSort({String? newSort}){
+    sort = newSort;
+    notifyListeners();
+  }
+
+   void setOptionsPoketbase() async {
+    await refreshProvider();
+    filter = '';
+    sort = '';
+    expand = '';
+    notifyListeners();
+   }
+
+
+//PARA FORMULARIOS EDITING - y SLECCIONAR OPCIONES 
  // Mapa para manejar la visibilidad de los dropdowns
   Map<String, bool> showDropdowns = {
     'categoria_compras': false,
@@ -411,29 +469,6 @@ Future<void> refreshProvider() async {
     'responsabilidad_ambiental': false,
     'active':false
   };
-
-// Función de ejemplo para obtener datos de Pocketbase
-Map<String, dynamic> getPoketbase() {
-   filterslist = showDropdowns.keys.toList();
-  return {
-    "filter": filterslist,
-    "sort": ['-updated','nombre']..addAll(showDropdowns.keys.toList()),
-    "expand": ['id_menu'],
-  };
-}
-
-   void setOptionsPoketbase({String? newFilter, String? newSort, String? newExpand}) async {
-    filter = newFilter;
-    sort = newSort;
-    expand = newExpand;
-    notifyListeners();
-    await refreshProvider();
-    filter = null;
-    sort = null;
-    expand = null;
-    notifyListeners();
-   }
-
 
    // Método para alternar un dropdown específico
   void toggleDropdown(String key) {

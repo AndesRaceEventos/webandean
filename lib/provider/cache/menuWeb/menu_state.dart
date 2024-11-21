@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:webandean/utils/files/assets-svg.dart';
+import 'package:webandean/utils/files%20assset/assets-svg.dart';
 
 class MenuProvider with ChangeNotifier {
   bool _isVisible = true; // Estado inicial

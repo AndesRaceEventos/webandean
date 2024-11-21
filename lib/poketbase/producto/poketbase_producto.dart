@@ -3,7 +3,8 @@ import 'dart:typed_data';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:webandean/api/api_poketbase.dart';
 import 'package:webandean/model/producto/model_producto.dart';
-import 'package:http/http.dart' as http;
+import 'package:webandean/poketbase/procesing_files_poketbase.dart';
+
 
 // FORMA API PUBLUC  https://andean-lodge.pockethost.io/api/collections/almacen_productos/records?page=1&perPage=500&sort=-created&skipTotal=true
 
@@ -23,44 +24,49 @@ class TProductosApp {
   }
 
   static Future<List<RecordModel>> getToPoketbase( {
-      String? filter,
+      String? filter= '',
       String? sort = '-created',
-      String? expand,//solo si existen relaciones, traera todos los datos del dato en emncion relacioando. 
-  }
-      ) async {
+      String? expand = '',}) async {
         print('${filter} / ${sort} / ${expand}');
-    try {
-      //get full list siempre devolvera rodos los datos ap esar de limitar el bath 
-      final records = await pb.collection('$collectionName').getFullList(
-        filter: filter,
-        expand: expand,
-        sort: sort,
-        );
-      print(records);
-      return records;
-    } catch (e) {
+      try {
+        final records = await pb.collection('$collectionName').getFullList(
+          filter: '${filter}' , //'categoria_compras="VIVERES"' 'categoria_compras="VERDURAS" && active=true',
+          expand: expand,
+          sort: sort,
+          // fields: ['ubicacion','nombre'].join(',') ?? ''
+          );
+        print(records);
+        return records;
+      } catch (e) {
       print('Error en almacen_productos: $e');
      rethrow; // Permitir que la excepción continúe propagándose.
      // return [];
     }
   }
 
-  static Future<RecordModel?> postToPoketbase(
-      {required TProductosAppModel data,
-       List<Uint8List>? imagen
+  static Future<RecordModel?> postToPoketbase({
+      required TProductosAppModel data, 
+       Uint8List? imagen,
+        List<Uint8List>? imagenes,
+        Uint8List? pdf,
+        List<Uint8List>? pdfs,
+        Uint8List? audio,
+        List<Uint8List>? audios,
+        Uint8List? word,
+        List<Uint8List>? words,
+        Uint8List? video,
+        List<Uint8List>? videos,
       }) async {
     try {
-      final record =await pb.collection('$collectionName').create(
-        body: data.toJson(),
-        files: [
-             if (imagen != null)
-             for(var i = 0; i < imagen.length; i++ )
-              http.MultipartFile.fromBytes('imagen', 
-              await imagen[i],
-            filename: 'imagen${data.qr}${data.nombre}.jpg'), 
-          ],
-
-          );
+      final files = await FilesProcessing.processingFilesPoketbase(
+        imagen: imagen, imagenes: imagenes,
+        pdf: pdf, pdfs: pdfs,
+        audio: audio, audios: audios,
+        word: word, words: words,
+        video: video, videos: videos,
+        id: data.id, qr: data.qr,nombre: data.nombre,
+      );
+      final record =await pb.collection('$collectionName').create(body: data.toJson(),files: files);
       return record;
     } catch (e) {
       print('Error en almacen_productos: $e');
@@ -69,18 +75,43 @@ class TProductosApp {
     }
   }
 
-  static Future<RecordModel?> putToPoketbase({required String id,required TProductosAppModel data, List<Uint8List>? imagen}) async {
+
+
+  static Future<RecordModel?> putToPoketbase({
+    required String id,
+    required TProductosAppModel data,
+    Uint8List? imagen,
+    List<Uint8List>? imagenes,
+    Uint8List? pdf,
+    List<Uint8List>? pdfs,
+    Uint8List? audio,
+    List<Uint8List>? audios,
+    Uint8List? word,
+    List<Uint8List>? words,
+    Uint8List? video,
+    List<Uint8List>? videos,
+    // reciba un índice general y determine qué lista debe modificarse
+    // int? index,
+    // bool delete = false,
+    }) async {
+    //   List<Uint8List> updatedImages = List.from(imagenes ?? []);
+    // List<Uint8List> updatedPdfs = List.from(pdfs ?? []);
+
+    
+    //   if (delete) {
+    //     updatedImages.removeAt(index); // Eliminar imagen
+    //   } 
+
+      final files = await FilesProcessing.processingFilesPoketbase(
+        imagen: imagen, imagenes: imagenes,
+        pdf: pdf, pdfs: pdfs,
+        audio: audio, audios: audios,
+        word: word, words: words,
+        video: video, videos: videos,
+        id: data.id, qr: data.qr,nombre: data.nombre,
+      );
     try {
-      final record = await pb
-          .collection('$collectionName')
-          .update(id, body: data.toJson(), 
-          files: [
-             if (imagen != null)
-             for(var i = 0; i < imagen.length; i++ )
-              http.MultipartFile.fromBytes('imagen', 
-              await imagen[i],
-            filename: 'imagen${data.qr}${data.nombre}.jpg'), 
-          ]);
+      final record = await pb.collection('$collectionName').update(id, body: data.toJson(), files: files);
       return record;
     } catch (e) {
       print('Error en almacen_productos: $e');
@@ -89,9 +120,7 @@ class TProductosApp {
     }
   }
 
-  static Future<bool> deleteToPoketbase(
-      {required String id, }) async {
-        print('$id ID PROUCTO ');
+  static Future<bool> deleteToPoketbase({required String id, }) async {
     try {
       await pb.collection('$collectionName').delete(id);
       return true;

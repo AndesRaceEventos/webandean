@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:webandean/provider/offlineState/provider_offline_state.dart';
+import 'package:webandean/provider/cache/offlineState/provider_offline_state.dart';
 import 'package:webandean/utils/speack/assets_speack.dart';
 import 'package:webandean/utils/text/assets_textapp.dart';
-import 'package:webandean/utils/files/assets_play_sound.dart';
+import 'package:webandean/utils/files%20assset/assets_play_sound.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

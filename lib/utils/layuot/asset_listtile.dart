@@ -24,3 +24,22 @@ Widget customListTitle(
     ),
   );
 }
+
+
+
+Widget checkBox(int value) {
+  return Row(
+    children: [
+      Container(
+            width: 13,
+            padding: EdgeInsets.only(right: 5),
+            child: Checkbox(
+            visualDensity: VisualDensity.compact,
+                value: true,
+                onChanged: (value) {},
+            ),
+          ),
+      P3Text(text: ' ${value} selected', color: Colors.blue.shade900,),
+    ],
+  );
+}

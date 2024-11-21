@@ -1,8 +1,11 @@
 import 'package:webandean/local_storage/shared_preferences/shaerd_preferences.dart';
 import 'package:webandean/pages/home/menu_principal.dart';
+import 'package:webandean/provider/cache/menuWeb/menu_state.dart';
 import 'package:webandean/utils/animations/assets_delayed_display.dart';
-import 'package:webandean/utils/files/assets_imge.dart';
+import 'package:webandean/utils/colors/assets_colors.dart';
+import 'package:webandean/utils/files%20assset/assets_imge.dart';
 import 'package:webandean/utils/speack/assets_speack.dart';
+import 'package:webandean/utils/text/assets_textapp.dart';
 import 'package:webandean/widget/estate%20app/state_icon_offline.dart';
 import 'package:flutter/material.dart';
 import 'package:webandean/provider/cache/start%20page/current_page.dart';
@@ -44,18 +47,26 @@ class _PhonePageState extends State<PhonePage> {
   @override
   Widget build(BuildContext context) {
     final layoutmodel = Provider.of<LayoutModel>(context);
-
+    final menuProvider = Provider.of<MenuProvider>(context);
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: AppColors.menuTheme,
           centerTitle: true,
-          title: AssetsDelayedDisplayYbasic(
-              duration: 2000,
-              child: Image.asset(
-                AppImages.andeanlodgesApp,height: 30,
-              )),
+          toolbarHeight: 40,
+          iconTheme: IconThemeData(color:  AppColors.menuIconColor),
+          title: H3Text(
+              text: menuProvider.selectedIndex != -1
+                  ? 'PANEL ${menuProvider.selectedTitle}'.toUpperCase()
+                  : 'Inicio'.toUpperCase(),
+              color: Colors.limeAccent,
+            ),
+          actions: [ Image.asset(
+            AppImages.andeanlodgesApp,height: 30,
+          ),]
+          
          ),
       body: layoutmodel.currentPage, //const ListaOpciones(),
-      endDrawer: const MenuPrincipal(),
+      drawer: const MenuPrincipal(),
     );
   }
 }

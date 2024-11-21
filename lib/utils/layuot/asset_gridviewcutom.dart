@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webandean/utils/animations/assets_delayed_display.dart';
-import 'package:webandean/utils/files/assets_imge.dart';
+import 'package:webandean/utils/files%20assset/assets_imge.dart';
 import 'package:webandean/utils/layuot/asset_boxdecoration.dart';
 import 'package:webandean/utils/layuot/assets_scroll_web.dart';
 import 'package:webandean/utils/routes/assets_img_urlserver.dart';
@@ -31,12 +31,12 @@ class AssetGRidViewCustom extends StatelessWidget {
                     // final e = groupedData[distancias]![index];
                     final value =listdata[index];
 
-                     final List<String> imagen = value.imagen is String
+                     final List<String> imagenCast = value.imagen is String
                             ? [value.imagen]
                             : value.imagen;
                     return AssetsDelayedDisplayYbasic(
-                      duration: 800,
-                      fadingDuration: 1500,
+                      duration: 200,
+                      fadingDuration: 1000,
                       curve: Curves.decelerate,
                       child: Stack(
                         alignment: Alignment.bottomCenter,
@@ -49,17 +49,17 @@ class AssetGRidViewCustom extends StatelessWidget {
                                     height: constraints.maxHeight,
                                     fadingDuration: 0,
                                     duration: 0,
-                                    image: imagen.first,
+                                    image: imagenCast.first,
                                     collectionId: value.collectionId ?? '',
                                     id: value.id,
                                     borderRadius: BorderRadius.circular(0),
-                                    data: value.imagen,
+                                    data: imagenCast,
                                     boxFit: BoxFit.cover,
                                   )
                                 : Image.asset(
                                   width: constraints.maxWidth,
                                   height: constraints.maxHeight,
-                                  AppImages.placeholder300,
+                                  AppImages.imageplaceholder300,
                                   fit: BoxFit.cover,
                                 ),
                           ),

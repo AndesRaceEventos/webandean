@@ -11,21 +11,21 @@
 //     {required Uint8List bytes,
 //     required String titulo,
 //     required BuildContext context}) async {
-//   // if (kIsWeb) {
-//   //   final blob = await html.Blob([bytes]);
-//   //   final url = await html.Url.createObjectUrlFromBlob(blob);
+//   if (kIsWeb) {
+//     final blob = await html.Blob([bytes]);
+//     final url = await html.Url.createObjectUrlFromBlob(blob);
 
-//   //   await html.AnchorElement(href: url)
-//   //     ..setAttribute("download", "${titulo}/${DateTime.now()}.pdf")
-//   //     ..click();
+//     await html.AnchorElement(href: url)
+//       ..setAttribute("download", "${titulo}.pdf")
+//       ..click();
 
-//   //   html.Url.revokeObjectUrl(url);
-//   // await   TextToSpeechService().speak('Descarga completada.');
-//   //   AssetAlertDialogPlatform.show(
-//   //       context: context,
-//   //       message: 'Archivo PDF descargado con éxito',
-//   //       title: 'Descarga completada.');
-//   // }
+//     html.Url.revokeObjectUrl(url);
+//     await   TextToSpeechService().speak('Descarga completada.');
+//     AssetAlertDialogPlatform.show(
+//         context: context,
+//         message: 'Archivo PDF descargado con éxito',
+//         title: 'Descarga completada.');
+//   }
 // }
 
 // //PARA EXCEL
@@ -33,21 +33,21 @@
 //     {required List<int> excelBytes,
 //     required String titulo,
 //     required BuildContext context}) async {
-//   // if (kIsWeb) {
-//   //   final blob = html.Blob([excelBytes]);
-//   //   final url = html.Url.createObjectUrlFromBlob(blob);
+//   if (kIsWeb) {
+//     final blob = html.Blob([excelBytes]);
+//     final url = html.Url.createObjectUrlFromBlob(blob);
 
-//   //   await html.AnchorElement(href: url)
-//   //     ..setAttribute('download', '${titulo}/${DateTime.now()}.xlsx')
-//   //     ..click();
+//     await html.AnchorElement(href: url)
+//       ..setAttribute('download', '${titulo}.xlsx')
+//       ..click();
 
-//   //   html.Url.revokeObjectUrl(url);
+//     html.Url.revokeObjectUrl(url);
 
-//   //   // Mensaje de éxito
-//   //   TextToSpeechService().speak('Descarga completada.');
-//   //   AssetAlertDialogPlatform.show(
-//   //       context: context,
-//   //       message: 'Archivo PDF descargado con éxito',
-//   //       title: 'Descarga completada.');
-//   // }
+//       // Mensaje de éxito
+//   TextToSpeechService().speak('Archivo Excel cargado con éxito.');
+//   AssetAlertDialogPlatform.show(
+//       context: context,
+//       message: 'Archivo Excel descargado con éxito',
+//       title: 'Descarga completada.');
+//   }
 // }

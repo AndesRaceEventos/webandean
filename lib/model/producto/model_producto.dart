@@ -1,6 +1,5 @@
 
-import 'package:webandean/utils/conversion/assets_format_parse_fecha_nula.dart';
-import 'package:webandean/utils/conversion/assets_format_parse_string_a_double.dart';
+import 'package:webandean/utils/conversion/assets_format_values.dart';
 
 class TProductosAppModel {
     int? idsql;//Se añade con fines de uso en sqllite 
@@ -47,8 +46,9 @@ class TProductosAppModel {
 
     String observacion;
     String idMenu;
-    String html;
+    String? html;
     List<String>? imagen;
+    List<String>? pdf;
     List<TProductosAppModel>? listaMarcas;
 
     bool? active;
@@ -90,6 +90,7 @@ class TProductosAppModel {
         required this.responsabilidadAmbiental,
 
          this.imagen,
+         this.pdf,
          this.cantidadEnStock,
          this.cantidadCritica,
          this.cantidadOptima,
@@ -97,7 +98,7 @@ class TProductosAppModel {
          this.cantidadMalogrados,
 
         required this.observacion,
-        required this.html,
+         this.html,
         required this.moneda,
          this.active,
     });
@@ -106,8 +107,8 @@ class TProductosAppModel {
         id: json["id"],
         collectionId: json["collectionId"],
         collectionName: json["collectionName"],
-        created: (json["created"]),
-        updated: (json["updated"]),
+        created: json["created"],//FormatValues.parseDateTime(json["created"]),
+        updated: json["updated"],//FormatValues.parseDateTime(json["updated"]),
         qr: json["qr"],
         categoriaCompras: json["categoria_compras"],
         categoriaInventario: json["categoria_inventario"],
@@ -115,20 +116,16 @@ class TProductosAppModel {
         proveedor: List<String>.from(json["PROVEEDOR"] ?? []), // manejo de nulos json["PROVEEDOR"],
         rotacion: json["rotacion"],
         imagen: List<String>.from(json["imagen"] ?? []), // manejo de nulos
+        pdf: List<String>.from(json["pdf"] ?? []), // manejo de nulos
         nombre: json["nombre"],
-        // listaMarcas: json["lista_marcas"],
-        //  listaMarcas: json["lista_marcas"] != null
-        //  ? List<TProductosAppModel>.from(json["lista_marcas"].map((x) => TProductosAppModel.fromJson(x)))
-        //  : [],
-       
         intUndMedida: json["int_und_medida"],
         outUndMedida: json["out_und_medida"],
-        intPrecioCompra: parseToDouble(json["int_precio_compra"]),
-        outPrecioDistribucion: parseToDouble(json["out_precio_distribucion"]),
+        intPrecioCompra: FormatValues.parseToDouble(json["int_precio_compra"]),
+        outPrecioDistribucion: FormatValues.parseToDouble(json["out_precio_distribucion"]),
         idMenu: json["id_menu"],
         html: json["html"],
         tipo: json["tipo"],
-        fechaVencimiento: parseDateTime(json["fecha_vencimiento"]),
+        fechaVencimiento: FormatValues.parseDateTime(json["fecha_vencimiento"]),
         estado: json["estado"],
         demanda: json["demanda"],
         condicionAlmacenamiento: json["condicion_almacenamiento"],
@@ -139,109 +136,134 @@ class TProductosAppModel {
         presentacionVisual: json["presentacion_visual"],
         embaseAmbiental: json["embase_ambiental"],
         responsabilidadAmbiental: json["responsabilidad_ambiental"],
-        cantidadEnStock: parseToDouble(json["cantidad_en_stock"]),
-        cantidadCritica: parseToDouble(json["cantidad_critica"]),
-        cantidadOptima: parseToDouble(json["cantidad_optima"]),
-        cantidadMaxima: parseToDouble(json["cantidad_maxima"]),
-        cantidadMalogrados: parseToDouble(json["cantidad_malogrados"]),
+        cantidadEnStock: FormatValues.parseToDouble(json["cantidad_en_stock"]),
+        cantidadCritica: FormatValues.parseToDouble(json["cantidad_critica"]),
+        cantidadOptima: FormatValues.parseToDouble(json["cantidad_optima"]),
+        cantidadMaxima: FormatValues.parseToDouble(json["cantidad_maxima"]),
+        cantidadMalogrados: FormatValues.parseToDouble(json["cantidad_malogrados"]),
         observacion: json["observacion"],
         moneda: json["moneda"], 
         active: json["active"],
+        // listaMarcas: listaMarcasFromString(json["lista_marcas"])
+        listaMarcas: FormatValues.listaFromJson<TProductosAppModel>
+          (json["lista_marcas"], TProductosAppModel.fromJson , defaultValueModel),
+        // listaMarcas: json["lista_marcas"] != null && json["lista_marcas"] is List
+        // ? List<TProductosAppModel>.from(json["lista_marcas"].map((x) => TProductosAppModel.fromJson(x)))
+        // : [],
     );
    
     Map<String, dynamic> toJson() => {
-        "id": id,
+        "id": id,//
         "collectionId": collectionId,
         "collectionName": collectionName,
-        "created": created,
-        "updated": updated,
+        // "created": created?.toIso8601String(),
+        // "updated": updated?.toIso8601String(),
 
-        "qr": qr,
-        "categoria_compras": categoriaCompras,
-        "categoria_inventario": categoriaInventario,
-        "ubicacion": ubicacion,
-        "PROVEEDOR": proveedor,
-        "rotacion": rotacion,
-        // "imagen":imagen,
-        "nombre": nombre,
+        "qr": qr,//
+        "categoria_compras": categoriaCompras,//
+        "categoria_inventario": categoriaInventario,//
+        "ubicacion": ubicacion,//
+        "PROVEEDOR": proveedor,//
+        "rotacion": rotacion,//
+        "imagen":imagen,
+        "pdf": pdf,
+        "nombre": nombre,//
         // "lista_marcas": listaMarcas,
-        // 'lista_marcas': listaMarcas?.map((e) => e.toJson()).toList() ?? [],
-        "int_und_medida": intUndMedida,
-        "out_und_medida": outUndMedida,
-        "int_precio_compra": intPrecioCompra,
-        "out_precio_distribucion": outPrecioDistribucion,
+        "int_und_medida": intUndMedida,//
+        "out_und_medida": outUndMedida,//
+        "int_precio_compra": intPrecioCompra,//
+        "out_precio_distribucion": outPrecioDistribucion,//
         "id_menu": idMenu,
-        "html": html,
+        // "html": html, no enviar html porque se borra la infroacion. 
         "tipo": tipo,
-        "fecha_vencimiento": fechaVencimiento.toIso8601String(),
-        "estado": estado,
-        "demanda": demanda,
-        "condicion_almacenamiento": condicionAlmacenamiento,
-        "formato": formato,
-        "tipo_precio": tipoPrecio,
-        "durabilidad": durabilidad,
-        "proveeduria": proveeduria,
-        "presentacion_visual": presentacionVisual,
-        "embase_ambiental": embaseAmbiental,
+        "fecha_vencimiento": fechaVencimiento.toIso8601String(),//
+        "estado": estado,//
+        "demanda": demanda,//
+        "condicion_almacenamiento": condicionAlmacenamiento,//
+        "formato": formato,//
+        "tipo_precio": tipoPrecio,//
+        "durabilidad": durabilidad,//
+        "proveeduria": proveeduria,//
+        "presentacion_visual": presentacionVisual,//
+        "embase_ambiental": embaseAmbiental,//
         "responsabilidad_ambiental": responsabilidadAmbiental,
 
-       "cantidad_en_stock": cantidadEnStock,
-        "cantidad_critica": cantidadCritica,
-        "cantidad_optima": cantidadOptima,
-        "cantidad_maxima": cantidadMaxima,
-        "cantidad_malogrados": cantidadMalogrados,
+        "cantidad_en_stock": cantidadEnStock,//
+        "cantidad_critica": cantidadCritica,//
+        "cantidad_optima": cantidadOptima,//
+        "cantidad_maxima": cantidadMaxima,//
+        "cantidad_malogrados": cantidadMalogrados,//
 
         "observacion": observacion,
-        "moneda": moneda,
-        "active": active,
+        "moneda": moneda,//
+        "active": active,//
+
+        // 'lista_marcas': listaMarcas?.map((e) => e.toJson()).toList() ?? [],
+        // 'lista_marcas': listaMarcasToString(listaMarcas)
+        'lista_marcas': FormatValues.listaToString<TProductosAppModel>(
+                          listaMarcas, 
+                          TProductosAppModel.fromJson, 
+                          (TProductosAppModel marca) => marca.toJson()
+                        )
     };
+    
+    // Convierte lista de TProductosAppModel a un String JSON
+    // static  String listaMarcasToString(List<TProductosAppModel>? listaMarcas) {
+    //   if (listaMarcas == null || listaMarcas.isEmpty) return '';
+    //   return jsonEncode(listaMarcas.map((marca) => marca.toJson()).toList());
+    // }
 
-}
- // Método para obtener los nombres de los campos en comillas
+    // Convierte un String JSON a una lista de TProductosAppModel
+    // static List<TProductosAppModel> listaMarcasFromString(String data) {
+    //   if (data.isEmpty) return [];// si es vacio retorna lista vacia 
+    //   List<dynamic> jsonData = jsonDecode(data);
+    //   return jsonData.map((item) => TProductosAppModel.fromJson(item)).toList();
+    // }
 
-  
+  static TProductosAppModel defaultValueModel() {
+    final nombre = "Error Json";//Todas Impotante para validar los Json SubListList
+    return TProductosAppModel(
+      id: '',
+      collectionId: null,
+      collectionName: null,
+      created: null,
+      updated: null,
+      qr: "",
+      categoriaCompras: "",
+      categoriaInventario: "",
+      ubicacion: "",
+      proveedor: [],
+      rotacion: "",
+      nombre: nombre, //Todos +++++++++++++++ 
+      listaMarcas: [],
+      intUndMedida: "",
+      outUndMedida: "",
+      intPrecioCompra: 0,
+      outPrecioDistribucion: 0,
+      idMenu: "",
+      tipo: "",
+      fechaVencimiento: DateTime.now(),
+      estado: "",
+      demanda: "",
+      condicionAlmacenamiento: "",
+      formato: "",
+      tipoPrecio: "",
+      durabilidad: "",
+      proveeduria: "",
+      presentacionVisual: "",
+      embaseAmbiental: "",
+      responsabilidadAmbiental: "",
+      imagen: [],
+      cantidadEnStock: 0.0,
+      cantidadCritica: 0.0,
+      cantidadOptima: 0.0,
+      cantidadMaxima: 0.0,
+      cantidadMalogrados: 0.0,
+      observacion: "",
+      html: "",
+      moneda: "",
+      active: false,
+    );
+  }
 
-TProductosAppModel tProductosAppModelDefault() {
-  return TProductosAppModel(
-    id: '',
-    collectionId: null,
-    collectionName: null,
-    created: null,
-    updated: null,
-    qr: "",
-    categoriaCompras: "",
-    categoriaInventario: "",
-    ubicacion: "",
-    proveedor: [],
-    rotacion: "",
-    nombre: "",
-    listaMarcas: [],
-    intUndMedida: "",
-    outUndMedida: "",
-    intPrecioCompra: 0,
-    outPrecioDistribucion: 0,
-    idMenu: "",
-    tipo: "",
-    fechaVencimiento: DateTime.now(),
-    estado: "",
-    demanda: "",
-    condicionAlmacenamiento: "",
-    formato: "",
-    tipoPrecio: "",
-    durabilidad: "",
-    proveeduria: "",
-    presentacionVisual: "",
-    embaseAmbiental: "",
-    responsabilidadAmbiental: "",
-    imagen: [],
-    cantidadEnStock: 0.0,
-    cantidadCritica: 0.0,
-    cantidadOptima: 0.0,
-    cantidadMaxima: 0.0,
-    cantidadMalogrados: 0.0,
-    observacion: "",
-    html: "",
-    moneda: "",
-    active: false,
-  );
 }

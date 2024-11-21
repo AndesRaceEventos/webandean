@@ -7,15 +7,18 @@ class AssetsDelayedDisplayX extends StatelessWidget {
       required this.child,
       required this.duration,
       this.fadingDuration = 2500,
-      this.curve = Curves.ease});
+      this.curve = Curves.ease,
+      this.slidingRight = false
+      });
   final Widget child;
   final int fadingDuration;
   final int duration;
   final Curve curve;
+  final bool slidingRight;
   @override
   Widget build(BuildContext context) {
     return DelayedDisplay(
-        slidingBeginOffset: Offset(-5, 0),
+        slidingBeginOffset: !slidingRight ? Offset(-5, 0) : Offset(5, 0),
         slidingCurve: curve,
         fadeIn: true,
         fadingDuration: Duration(milliseconds: fadingDuration),

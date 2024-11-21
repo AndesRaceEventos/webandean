@@ -1,10 +1,17 @@
+import 'package:webandean/pages/entregas/entrega%20general/entrega_general.dart';
+import 'package:webandean/pages/entregas/lista%20equipos/lista_equipos.dart';
+import 'package:webandean/pages/entregas/lista%20producto/lista_productos.dart';
+import 'package:webandean/pages/equipo/equipo.dart';
 import 'package:webandean/pages/home/dashboard_page.dart';
-import 'package:webandean/pages/t_productos/productos.dart';
-import 'package:webandean/pages/t_productos/qr_lector/qr-lector.dart';
+import 'package:webandean/pages/itinerarios/itinerarios.dart';
+import 'package:webandean/pages/personal/personal.dart';
+import 'package:webandean/pages/producto/productos.dart';
+import 'package:webandean/utils/qr_lector/qr-lector.dart';
 import 'package:webandean/provider/cache/menuWeb/menu_state.dart';
+import 'package:webandean/utils/animations/assets_delayed_display.dart';
 import 'package:webandean/utils/colors/assets_colors.dart';
-import 'package:webandean/utils/files/assets-svg.dart';
-import 'package:webandean/utils/files/assets_imge.dart';
+import 'package:webandean/utils/files%20assset/assets-svg.dart';
+import 'package:webandean/utils/files%20assset/assets_imge.dart';
 import 'package:webandean/utils/layuot/asset_boxdecoration.dart';
 import 'package:webandean/utils/layuot/assets_scroll_web.dart';
 import 'package:webandean/utils/routes/assets_class_routes_pages.dart';
@@ -25,21 +32,25 @@ class MenuPrincipal extends StatelessWidget {
         clipBehavior: Clip.none,
         elevation: 2,
         width: 150,
-        child: Container(
-          color: AppColors.menuTheme,
-          padding: const EdgeInsets.only(bottom:10),
-          child: SafeArea(
-            bottom: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                inicioButton(context),
-                const Expanded(child: ListaOpcionesphone()),
-                ModoOfflineClick(),
-
-                //  size.width < 900 ? CloseSesion() : SizedBox(),
-                // Opción para fijar el menú
-              ],
+        child: AssetsDelayedDisplayX(
+          duration: 100,
+          fadingDuration: 700,
+          child: Container(
+            color: AppColors.menuTheme,
+            padding: const EdgeInsets.only(bottom:10),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  inicioButton(context),
+                  const Expanded(child: ListaOpcionesphone()),
+                  ModoOfflineClick(),
+          
+                  //  size.width < 900 ? CloseSesion() : SizedBox(),
+                  // Opción para fijar el menú
+                ],
+              ),
             ),
           ),
         ));
@@ -95,8 +106,38 @@ class ListaOpcionesphone extends StatelessWidget {
       RoutesLocalStorage(
         icon: AppSvg(color:colorSvg).equipoSvg,
         title: "Equipos",
-        path: Container(),
+        path: PageEquipos(),
       ),
+      RoutesLocalStorage(
+        icon: AppSvg().entregasSvg,
+        title: "Lista Productos",
+        path: PageListaProductos(),
+      ),
+      RoutesLocalStorage(
+        icon: AppSvg().entregasSvg,
+        title: "Lista Equipos",
+        path: PageListaEquipos(),
+      ),
+       //PageEntregaGeneral
+       RoutesLocalStorage(
+        icon: AppSvg().deliverySvg,
+        title: "Entregas Almacén",
+        path: PageEntregaGeneral(),
+      ),
+
+      RoutesLocalStorage(
+        icon: AppSvg(color: colorSvg).itinerarySvg,
+        title: "Itinerarios",
+        path: PageItinerarios(),
+      ),
+     
+       //PagePersonal
+       RoutesLocalStorage(
+        icon: AppSvg(color: colorSvg).personalSvg,
+        title: "Personal OP",
+        path: PagePersonal(),
+      ),
+      
       RoutesLocalStorage(
         icon: AppSvg(color: colorSvg).fileSvg,
         title: "Reservas",

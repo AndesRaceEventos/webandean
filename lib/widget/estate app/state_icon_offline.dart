@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webandean/provider/offlineState/provider_offline_state.dart';
+import 'package:webandean/provider/cache/offlineState/provider_offline_state.dart';
 
 class SignalAPi extends StatefulWidget {
   const SignalAPi({super.key});

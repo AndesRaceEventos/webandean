@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   //menu barra lateral 
-   static const Color menuTheme = Color(0xff2C3E50); // Gris oscuro minimalista
+   static const Color menuTheme =  Color(0xFF653B5B) ;//Color(0xff2C3E50); // Gris oscuro minimalista
    static const Color menuIconColor = Colors.white70; // Blanco suave, casi crema
+  //Table header Theme 
+  static const Color menuHeaderTheme =  Color(0xFFAA9A9E);
+  static const Color menuTextDark = Color(0xFF17010E);
+
+
   // Colores principales (minimalistas)
   static const Color primaryRed = Color(0xFF4A4A4A); // Gris oscuro minimalista
   static const Color primaryWhite = Color(0xFFF7F8FA); // Blanco suave, casi crema
@@ -33,7 +38,7 @@ class AppColors {
 
 
   //FUNSION QUE DEVULVE UN COLOR
-  Color getColorFromHex(String hexColor) {
+ static Color getColorFromHex(String hexColor) {
     try {
       hexColor = hexColor.replaceAll('#', '');
       if (hexColor.length == 6) {
@@ -46,8 +51,15 @@ class AppColors {
     }
   }
 
-  Color getColorByIndex(int index) {
-    return index % 2 == 0 ? AppColors.primaryRed.withOpacity(.05) : AppColors.primaryWhite;
+
+ static Color getColorByIndex({ 
+      required int index, 
+      Color colorPar = AppColors.primaryRed, 
+      Color colorImpar = AppColors.primaryWhite
+      }) {
+   
+    return index % 2 == 0 ?  
+          colorPar : colorImpar;
   }
 
 }

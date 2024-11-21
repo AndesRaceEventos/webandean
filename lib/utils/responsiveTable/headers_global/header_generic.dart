@@ -3,7 +3,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:responsive_table/responsive_table.dart';
-import 'package:webandean/utils/files/assets-svg.dart';
+import 'package:webandean/utils/colors/assets_colors.dart';
+import 'package:webandean/utils/files%20assset/assets-svg.dart';
 import 'package:webandean/utils/text/assets_textapp.dart';
 
 DatatableHeader dataHeaderCustom({String? header, String? value, IconData? icon}) {
@@ -15,22 +16,42 @@ DatatableHeader dataHeaderCustom({String? header, String? value, IconData? icon}
     editable: true,
     textAlign: TextAlign.center,
     headerBuilder: (value) {
-      return Container(
-        // constraints: BoxConstraints(maxWidth: 200),
-        decoration: BoxDecoration(
-          border: Border.all(style: BorderStyle.solid, color: Colors.grey.shade300),
-        ),
-        child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 5),
-          visualDensity: VisualDensity.compact,
-          dense: false,
-          minLeadingWidth: 10,
-          leading: Icon(icon, size: 15,color: Colors.black87,),
-          title: H3Text(text:header.toUpperCase(),fontSize: 11),
-          trailing: AppSvg(width: 20).sortSvg, // Icono de ordenamiento
-        ),
-      );
-    },
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double maxWidth = constraints.maxWidth > 200 ? 150 : constraints.maxWidth;
+        return Container(
+          width: maxWidth,
+          constraints: BoxConstraints(maxWidth: maxWidth), // Limita el ancho del header
+          decoration: BoxDecoration(
+            color: AppColors.menuHeaderTheme,
+            border: Border.all(
+              width: .4,
+              style: BorderStyle.solid,
+              color: Colors.grey.shade200),
+          ),
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 2),
+            visualDensity: VisualDensity.compact,
+            // dense: true,
+            minLeadingWidth: 0, 
+            minVerticalPadding: 0,
+            // leading: Icon(icon, size: 12, color: AppColors.menuTheme),
+            title: Row(
+              children: [
+                Icon(icon, size: 16, color: AppColors.menuTextDark),
+                SizedBox(width: 5), // Espacio entre icono y texto
+                Expanded(child: H3Text(text: header.toUpperCase(), fontSize: 11, 
+                color: AppColors.menuTextDark, textAlign: TextAlign.center,)),
+                SizedBox(width: 5), // Espacio entre icono y texto
+                AppSvg(width: 15, color:  Colors.white60).sortSvg, // Icono de ordenamiento
+              ],
+            ),
+            // trailing: AppSvg(width: 12, color: AppColors.menuTheme).sortSvg, // Icono de ordenamiento
+          ),
+        );
+      },
+    );
+  },
     sourceBuilder: (value, row) {
       Widget renderedWidget;
 
@@ -74,7 +95,28 @@ DatatableHeader dataHeaderCustom({String? header, String? value, IconData? icon}
             textAlign: TextAlign.center,
           ),
         );
-      } else {
+      } else if (value is List) {
+        // Renderiza la lista como Chips
+        renderedWidget = Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: Wrap(
+            spacing: 2.0,
+            runSpacing: .0,
+            children: value.map<Widget>((item) {
+              return Chip(
+                 backgroundColor: AppColors.menuHeaderTheme.withOpacity(.5),
+                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                 visualDensity: VisualDensity.compact,
+                 side: BorderSide.none,
+                 label: Text(
+                  '$item',
+                  style: const TextStyle(fontSize: 11),
+                ),
+              );
+            }).toList(),
+          ),
+        );}
+      else {
         renderedWidget = Padding(
           padding: const EdgeInsets.all(10.0),
           child: const P2Text(
@@ -85,7 +127,7 @@ DatatableHeader dataHeaderCustom({String? header, String? value, IconData? icon}
         );
       }
 
-      return renderedWidget;
+      return  renderedWidget;
     },
   );
 }

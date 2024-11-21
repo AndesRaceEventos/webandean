@@ -1,14 +1,16 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_table/responsive_table.dart';
+import 'package:webandean/provider/cache/files/files_procesisng.dart';
 import 'package:webandean/utils/button/asset_buton_widget.dart';
 
-import 'package:webandean/utils/files/assets-svg.dart';
+import 'package:webandean/utils/files%20assset/assets-svg.dart';
 import 'package:webandean/utils/speack/assets_speack.dart';
 import 'package:webandean/utils/text/assets_textapp.dart';
 import 'package:webandean/utils/dialogs/assets_dialog.dart';
-import 'package:webandean/utils/layuot/assets_scroll_web.dart';
 import 'package:webandean/utils/textfield/decoration_form.dart';
 import 'package:webandean/utils/layuot/asset_boxdecoration.dart';
 import 'package:webandean/utils/mouse%20region/selectd_region.dart';
@@ -29,7 +31,8 @@ class ResponsiveTableCustom extends StatefulWidget {
     required this.listProductos, 
     required this.dropContainer, 
     required this.fotterButonBar, 
-    required this.dtaHeaderListProgress, 
+     this.dtaHeaderListProgress, 
+      this.dtaHeaderListProgress2, 
     
     required this.headerData, 
     required this.generateData, 
@@ -43,7 +46,8 @@ class ResponsiveTableCustom extends StatefulWidget {
   final List<dynamic> listProductos;
   final Widget Function(Map<String, dynamic>) dropContainer; // Función para el dropdown
   final Widget Function(List<dynamic>, List<Map<String, dynamic>>, List<Map<String, dynamic>>) fotterButonBar; // Función para el dropdown
-  final Function() dtaHeaderListProgress;
+  final Function()? dtaHeaderListProgress;
+  final Function()? dtaHeaderListProgress2;
 
   final List<Map<String, dynamic>>  headerData;
   final List<Map<String, dynamic>>  Function(List<dynamic> ) generateData;
@@ -57,9 +61,8 @@ class ResponsiveTableCustom extends StatefulWidget {
 }
 
 class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
-
-  late List<DatatableHeader>
-      _headers; // Encabezados de la tabla, se inicializan en initState
+ 
+  late List<DatatableHeader> _headers; // Encabezados de la tabla, se inicializan en initState
 
   //TODOS ** ***************** GENERICOS - NO VARÍAN A LO LARGO DEL USO DE LA TABLA *******************
 
@@ -267,6 +270,10 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
     return widget.generateData(widget.listProductos);
   }
 
+    //FORMULARIO
+  // TProductosAppModel? dataDrop;
+  dynamic? dataDrop;
+  bool isFomView = false;
 
 
   @override
@@ -276,7 +283,7 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
     // a una lista de encabezados personalizados usando la función 'dataHeaderCustom'.
     // También se añade un encabezado opcional para la barra de progreso.
     _headers = [
-      dtaHeadercarImage(),//GENERAL siempre y cuando imagen sea [imagen]
+        dtaHeadercarImage(),//GENERAL siempre y cuando imagen sea [imagen] =======> 
       // ...headerData.map(
       //       (entry) => dataHeaderCustom(
       //         header: entry['header'],
@@ -284,7 +291,7 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
       //         icon: entry['icon'], // Pasar el icono también como parámetro
       //       ),
       //     ),
-       ...widget.headerData.map(
+       ...widget.headerData.map( ///====>
             (entry) => dataHeaderCustom(
               header: entry['header'],
               value: entry['value'],
@@ -293,9 +300,13 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
           ),
       //! Barra de progreso opcional
 
-      // dtaHeaderListProgress(), //TODOS progreso, ESPECIFICO.
-      widget.dtaHeaderListProgress(), //TODOS progreso, ESPECIFICO.
-      dtaHeadercarActions(
+      // dtaHeaderListProgress(), //TODOS progreso, ESPECIFICO.  
+      // widget.dtaHeaderListProgress(), //TODOS progreso, ESPECIFICO.   =======> 
+
+      // Barra de progreso opcional: se agrega solo si 'dtaHeaderListProgress' no es null
+      if (widget.dtaHeaderListProgress != null) widget.dtaHeaderListProgress!(),
+      if (widget.dtaHeaderListProgress2 != null) widget.dtaHeaderListProgress2!(),
+      dtaHeadercarActions( // =======> 
         context: context,
         onPressedEdit: (value) => setState(() => dataDrop = value),
         // onPressedDelete: (value) => ActionButtonTable().isDeleteForm(
@@ -312,15 +323,12 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
     _initializeData();
   }
 
-  //FORMULARIO
-  // TProductosAppModel? dataDrop;
-  dynamic? dataDrop;
-  bool isFomView = false;
+
 
   @override
   Widget build(BuildContext context) {
 
-    return ScrollWeb(
+    return Container(
       child: AssetTextSelectionRegion(
         child: GestureDetector(
           onTap: () {
@@ -347,7 +355,7 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
                       sortAscending: _sortAscending,
                       sortColumn: _sortColumn,
                       isLoading: _isLoading,
-                      reponseScreenSizes: [ScreenSize.xs, ScreenSize.sm],
+                      reponseScreenSizes: [],// ScreenSize.xs, ScreenSize.sm
                       onSort: (value) => onSort(value: value),
                       //NOP SE MODIFICA
                       onSelect: (value, item) {
@@ -368,9 +376,9 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
                         }
                       },
                       //********************  ESPECIFICOS  ****************
-
-                      title: InkWell(
-                        onTap: () {
+      
+                      title: TextButton(
+                        onPressed: () {
                           setState(() {
                             isFomView = !isFomView;
                             print(isFomView);
@@ -394,7 +402,7 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
                         // return dropDowButonbar(data, context);//todos 
                         return widget.dropContainer(data);
                       },
-
+      
                       footers: [
                         // fotterButonBar(//todos 
                         //   listaProductos: widget.listProductos,
@@ -433,6 +441,7 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
                   //   initializeData: () => _initializeData(),
                   //   isVisibleForm: () => isVisibleForm(),
                   // )
+                  
                    widget.fomrView( 
                      context,
                      constraints.maxHeight * .99,
@@ -440,7 +449,8 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
                      dataDrop,
                      _initializeData,
                     isVisibleForm,
-                  )
+                  ), 
+                 
                 ],
               ),
             );
@@ -454,31 +464,37 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
   List<Widget> actionsSearch() {
     return [
       if (_isSearch)
-        Container(
-            decoration: AssetDecorationBox().decorationBox(),
-            constraints: BoxConstraints(maxWidth: 300, maxHeight: 45),
-            child: TextField(
-              decoration: decorationTextField(
-                hintText: 'Escriba aquí para buscar',
-                labelText: 'Buscar',
-                fillColor: Colors.white,
-                suffixIcon: IconButton(
-                    icon: const Icon(Icons.cancel),
-                    onPressed: () {
-                      setState(() {
-                        _isSearch = false;
-                      });
-                      _initializeData();
-                    }),
-                prefixIcon: Icon(Icons.search),
-              ),
-              onChanged: (value) {
-                _filterData(value);
-              },
-              // onSubmitted: (value) {
-              //   _filterData(value);
-              // },
-            )),
+     LayoutBuilder(
+      builder: (context, constraints) {
+        double maxWidth = constraints.maxWidth > 200 ? 400 : 200;
+            return Container(
+                decoration: AssetDecorationBox().decorationBox(),
+                constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: 45),
+                child: TextField(
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, height: 1.5),
+                  decoration: AssetDecorationTextField.decorationTextFieldRectangle(
+                    hintText: 'Escriba aquí para buscar',
+                    labelText: 'Buscar',
+                    fillColor: Colors.white,
+                    suffixIcon: IconButton(
+                        icon: const Icon(Icons.cancel),
+                        onPressed: () {
+                          setState(() {
+                            _isSearch = false;
+                          });
+                          _initializeData();
+                        }),
+                    prefixIcon: Icon(Icons.search),
+                  ),
+                  onChanged: (value) {
+                    _filterData(value);
+                  },
+                  // onSubmitted: (value) {
+                  //   _filterData(value);
+                  // },
+                ));
+          }
+        ),
       if (!_isSearch)
         AppIconButon(
             tooltip: 'Buscar',
@@ -502,12 +518,17 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
             context: context,
             builder: (BuildContext context) {
               TextToSpeechService().speak(
-                          '¿Seguro que quieres cerrar el panel?');
+                          '¿Seguro que quieres cerrar el formulario?');
               return AssetAlertDialogPlatform(
                 message: '¿Seguro que quieres cerrar el panel?',
                 title: 'Cerrar Sin Guardar',
                 oK_textbuton: 'Cerrar',
-
+                actionButon:  CupertinoDialogAction(
+                child: Text('Continuar'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
               );
             },
           ) ??
@@ -518,6 +539,7 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
         setState(() {
           dataDrop = null;
           isFomView = false;
+          context.read<FilesProvider>().clearAllFiles();
         });
       }
     }

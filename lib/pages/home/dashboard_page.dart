@@ -1,6 +1,8 @@
 
+import 'package:provider/provider.dart';
+import 'package:webandean/provider/sunat%20/provider_tipo_cambio.dart';
 import 'package:webandean/utils/colors/assets_colors.dart';
-import 'package:webandean/utils/files/assets-svg.dart';
+import 'package:webandean/utils/files%20assset/assets-svg.dart';
 import 'package:webandean/utils/layuot/asset_boxdecoration.dart';
 import 'package:webandean/utils/layuot/assets_scroll_web.dart';
 import 'package:webandean/utils/routes/assets_class_routes_pages.dart';
@@ -56,6 +58,10 @@ class _DashboardpageState extends State<Dashboardpage> {
 
   @override
   Widget build(BuildContext context) {
+    final sunatTipocambio = Provider.of<TipoCambioProvider>(context);
+    double tipoCambioCompra = sunatTipocambio.tipoCambioCompra;
+    double tipoCambioVenta = sunatTipocambio.tipoCambioVenta;
+    DateTime fechatipoCambio = sunatTipocambio.fecha;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -75,6 +81,19 @@ class _DashboardpageState extends State<Dashboardpage> {
                   textAlign: TextAlign.center,
                 ),
               ),
+              
+               H3Text(
+                  text: 'tipoCambioCompra ${fechatipoCambio}',
+                  textAlign: TextAlign.center,
+              ),
+              H3Text(
+                  text: 'tipoCambioCompra ${tipoCambioCompra}',
+                  textAlign: TextAlign.center,
+              ),
+             H3Text(
+                  text: 'tipoCambioVenta ${tipoCambioVenta}',
+                  textAlign: TextAlign.center,
+                ),
               Expanded(
                 child: ScrollWeb(
                   child: PageView(

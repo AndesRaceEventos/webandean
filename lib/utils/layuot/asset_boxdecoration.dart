@@ -23,9 +23,10 @@ BoxDecoration headerDecoration({Color? color}) {
           Border(bottom: BorderSide(width: 5, color: Colors.grey.shade600)));
 }
 
-BoxDecoration rowDecoration() {
+BoxDecoration rowDecoration({Color? color}) {
+
   return BoxDecoration(
-      color: Colors.white,
+      color:  color ?? Colors.white,
       border: Border(bottom: BorderSide(color: Colors.grey.shade400)));
 }
 

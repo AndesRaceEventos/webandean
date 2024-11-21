@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
-import 'package:webandean/pages/t_productos/editing_forma_p.dart';
+import 'package:webandean/pages/producto/editing_forma_p.dart';
 import 'package:webandean/provider/producto/provider_producto.dart';
-import 'package:webandean/utils/files/assets-svg.dart';
+import 'package:webandean/utils/files%20assset/assets-svg.dart';
 import 'package:webandean/utils/routes/assets_class_routes_pages.dart';
 import 'package:webandean/utils/speack/assets_speack.dart';
 

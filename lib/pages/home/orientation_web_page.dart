@@ -5,9 +5,11 @@ import 'package:webandean/provider/cache/menuWeb/menu_state.dart';
 import 'package:webandean/provider/cache/start%20page/current_page.dart';
 import 'package:provider/provider.dart';
 import 'package:webandean/utils/animations/assets_animationswith.dart';
+import 'package:webandean/utils/animations/assets_delayed_display.dart';
 import 'package:webandean/utils/blur/blur_filter.dart';
-import 'package:webandean/utils/files/assets-svg.dart';
-import 'package:webandean/utils/files/assets_imge.dart';
+import 'package:webandean/utils/colors/assets_colors.dart';
+import 'package:webandean/utils/files%20assset/assets-svg.dart';
+import 'package:webandean/utils/files%20assset/assets_imge.dart';
 import 'package:webandean/utils/layuot/asset_boxdecoration.dart';
 import 'package:webandean/utils/speack/assets_speack.dart';
 import 'package:webandean/utils/text/assets_textapp.dart';
@@ -62,21 +64,37 @@ class _WebPageState extends State<WebPage> {
           ),
           //CONTENT
           Expanded(
-              child: Stack(
-            alignment: AlignmentDirectional.bottomCenter,
-            children: [
-              AppBLurFilter(
-                child: Opacity(
-                    opacity: .3, child: Image.asset(AppImages.iaImage2)),
-              ),
-              Column(
-                children: [
-                  _CustomAppBar(menuProvider: menuProvider),
-                  Expanded(child: layoutmodel.currentPage),
-                ],
-              ),
-            ],
-          )),
+              child: AssetsDelayedDisplayX(
+                duration: 900,
+                curve: Curves.fastLinearToSlowEaseIn,
+                slidingRight: true,
+                child: Stack(
+                 alignment: AlignmentDirectional.bottomCenter,
+                 children: [
+                   Align(
+                    alignment: Alignment.topCenter,
+                     child: H2Text(
+                      text: menuProvider.selectedIndex != -1
+                          ? 'PANEL ${menuProvider.selectedTitle}'.toUpperCase()
+                          : 'Inicio'.toUpperCase(),
+                      color: Colors.limeAccent,
+                                       ),
+                   ),
+                    AppBLurFilter(
+                      child: Opacity(
+                          opacity: .3, child: Image.asset(AppImages.iaImage2)),
+                    ),
+                    Column(
+                      children: [
+                        _CustomAppBar(menuProvider: menuProvider),
+                        Expanded(
+                          child: layoutmodel.currentPage,
+                        ),
+                      ],
+                    ),
+                   ],
+                ),
+              )),
         ],
       ),
     );
@@ -94,7 +112,7 @@ class _CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final menuProvider = Provider.of<MenuProvider>(context);
     return Container(
-      decoration: AssetDecorationBox().headerDecoration(color: Color(0xff2C3E50)),
+      decoration: AssetDecorationBox().headerDecoration(color: AppColors.menuTheme),
       padding: EdgeInsets.only(left: 5,right: 2,bottom: 1),
       child: SafeArea(
         bottom: false,

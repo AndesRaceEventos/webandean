@@ -6,7 +6,7 @@ import 'package:gallery_image_viewer/gallery_image_viewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:webandean/api/api_poketbase.dart';
 import 'package:webandean/utils/animations/assets_delayed_display.dart';
-import 'package:webandean/utils/files/assets_imge.dart';
+import 'package:webandean/utils/files%20assset/assets_imge.dart';
 import 'package:webandean/utils/layuot/assets_circularprogrees.dart';
 
 class GLobalImageUrlServer extends StatelessWidget {
@@ -97,7 +97,7 @@ Container imagenLogo() {
     decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fitHeight,
-          image: AssetImage(AppImages.placeholder300),
+          image: AssetImage(AppImages.imageplaceholder300),
         ),
         color: Colors.red.withOpacity(.3)),
   );

@@ -14,8 +14,7 @@ void metodoDescargaMovilPDF(
   Directory directory = await getApplicationDocumentsDirectory();
   // Genera un nombre único para el archivo
   try {
-    final timestamp = (DateTime.now());
-    final fileName = '${titulo}_$timestamp.pdf';
+    final fileName = '${titulo}.pdf';
     final filePath = '${directory.path}/$fileName';
     final filePdf = File(filePath);
 
@@ -49,15 +48,15 @@ void metodoDescargaMovilEXcel(
     {required List<int> excelBytes,
     required String titulo,
     required BuildContext context}) async {
-  final directory =
-      await getApplicationDocumentsDirectory().timeout(Duration(seconds: 60));
-  final excelFile = File('${directory.path}/${titulo}.xlsx');
-  await excelFile.writeAsBytes(excelBytes);
-  await OpenFilex.open(excelFile.path);
-  // Mensaje de éxito
+  final directory = await getApplicationDocumentsDirectory().timeout(Duration(seconds: 60));
+    // Mensaje de éxito
   TextToSpeechService().speak('Archivo Excel cargado con éxito.');
   AssetAlertDialogPlatform.show(
       context: context,
-      message: 'Archivo PDF descargado con éxito',
+      message: 'Archivo Excel descargado con éxito',
       title: 'Descarga completada.');
+  final excelFile = File('${directory.path}/${titulo}.xlsx');
+  await excelFile.writeAsBytes(excelBytes);
+  await OpenFilex.open(excelFile.path);
+  
 }

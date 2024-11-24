@@ -51,7 +51,7 @@ class _PageResponsiveProductos extends StatefulWidget {
 
 class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
   
-
+int selectedIndex = 0; // Para saber cuál pestaña está activa TAbbaView 
 
   String? _selectedProduct;
 
@@ -64,6 +64,10 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
   void initState() {
     super.initState();
     _filterseachController = TextEditingController();
+     // Limpiar la búsqueda para evitar que los datos filtrados persistan innecesariamente
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+    Provider.of<TProductosAppProvider>(context, listen : false).clearSearch([]);
+    });
   }
 
   @override
@@ -75,7 +79,9 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
 
   @override
   Widget build(BuildContext context) {
+
     final dataProvider = Provider.of<TProductosAppProvider>(context);
+    
     String searchText = dataProvider.searchText;
 
     final listProductos = dataProvider.listProductos; //Lista Productos Geenral
@@ -86,9 +92,23 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
 
     final groupedData = dataProvider.groupByDistance( listData: searchProvider, fieldName: _selectedProduct ?? 'Todos');
 
+    // Validar y ajustar el índice seleccionado
+    if (selectedIndex >= groupedData.keys.length) {
+      selectedIndex = 0; // Restablece al primer índice disponible
+    }
      
-    return DefaultTabController(
+    return  groupedData.keys.isEmpty
+        ? Center(
+          child: AppIconButoonELegant(
+          colorButon: AppColors.menuIconColor,
+          colorlabel: AppColors.menuHeaderTheme,
+          onPressed: () => isSeachVisible(dataProvider, listProductos),
+          label: 'No hay resultados, ¿otra búsqueda? 🔍👀',
+          icon: Icon(Icons.close, size: 30, color: AppColors.menuHeaderTheme)))
+
+        : DefaultTabController(
       length: groupedData.keys.length,
+       initialIndex: selectedIndex,
       child: Scaffold(
          //Trasnparente para la imgen de fondo
           backgroundColor:Colors.transparent,
@@ -149,7 +169,7 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
                   onPressed: () {
                     TextToSpeechService().speak('Modo ${!istransition ? "imágenes" : "tabla"}.');
                     setState(() => istransition = !istransition);
-                   isRefreshDataSearh(dataProvider, listProductos);
+                    isRefreshDataSearh(dataProvider, listProductos);
                   },
                 ),
                 AppIconButon(
@@ -181,6 +201,11 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
                   overlayColor: WidgetStatePropertyAll(Colors.transparent),
                   indicatorWeight: 1,
                   // dividerHeight: 0,
+                  onTap: (index) {
+                  setState(() {
+                    selectedIndex = index; // Actualiza el índice seleccionado
+                  });
+                },
                   tabs: groupedData.keys.map((String tabTitle) {
                     print(tabTitle);
                     return Tab(
@@ -197,74 +222,81 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
           body: Column(
             children: [
               
-              
+             
               Expanded(
                 child: TabBarView(
                   physics: const NeverScrollableScrollPhysics(),
                   children: groupedData.keys.map((String distancias) {
-                    return AssetsAnimationSwitcher(
-                      duration: 600,
-                      child: istransition
-                          ? MyGridView(
-                              groupedData: groupedData, 
-                              distancias: distancias,
-                              childrenBuilder: (value, constraints) {
-                               // Casteamos el dynamic a TProductosAppModel
-                               final TProductosAppModel e = value as TProductosAppModel;
-                                return  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      H2Text(
-                                        text: e.qr,
-                                        fontSize: 11,
-                                        selectable: true,
-                                      ),
-                                      H2Text(
-                                        text: e.nombre,
-                                        fontSize: 11,
-                                        selectable: true,
-                                      ),
-                                    ],
-                                  );
-                              },
-                            )
-                          : Builder(
-                            builder: (context) {
-                              return  ScrollWeb(
-                                  child:  ResponsiveTableCustom(
-                                    listProductos: groupedData[distancias]!,//Lista Datos
-                                    generateData: (widgetListProductos ) => generateData(widgetListProductos),
-                                    headerData: headerData, 
-                                    dtaHeaderListProgress: () => headerProgress(), //TODOS progreso, ESPECIFICO.
-                                    dropContainer: (data) => dropDowButonbar(data, context), // La función que genera el dropdown
-                                    fotterButonBar: (widgetListProductos, _selecteds, _sourceOriginal) {
-                                      return fotterButonBar(
-                                        listaProductos: widgetListProductos,
-                                        selecteds: _selecteds,
-                                        sourceOriginal: _sourceOriginal,
-                                      );
-                                    }, 
-                                    applyFilter: (_sourceOriginal , value ) => DataUtils(_sourceOriginal).applyFilter(value), 
-                                    fomrView: (context , height , isFomView ,dataDrop , dynamic _initializeData() , dynamic isVisibleForm() ) {
-                                     return ActionButtonTable().fomrView(
-                                            context: context,
-                                            height: height,
-                                            isFomView: isFomView,
-                                            dataDrops: dataDrop,
-                                            initializeData: () => _initializeData(),
-                                            isVisibleForm: () => isVisibleForm(),
-                                          );
+                     int index = groupedData.keys.toList().indexOf(distancias);
+                     
+                    if(selectedIndex != index) return Container();
+                    
+                    return Offstage(
+                      offstage: selectedIndex != index, // Solo muestra el contenido si está activo
+                      child: AssetsAnimationSwitcher(
+                        duration: 600,
+                        child: istransition
+                            ? MyGridView(
+                                groupedData: groupedData, 
+                                distancias: distancias,
+                                childrenBuilder: (value, constraints) {
+                                 // Casteamos el dynamic a TProductosAppModel
+                                 final TProductosAppModel e = value as TProductosAppModel;
+                                  return  Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        H2Text(
+                                          text: e.qr,
+                                          fontSize: 11,
+                                          selectable: true,
+                                        ),
+                                        H2Text(
+                                          text: e.nombre,
+                                          fontSize: 11,
+                                          selectable: true,
+                                        ),
+                                      ],
+                                    );
+                                },
+                              )
+                            : Builder(
+                              builder: (context) {
+                                return  ScrollWeb(
+                                    child:  ResponsiveTableCustom(
+                                      listProductos: groupedData[distancias]!,//Lista Datos
+                                      generateData: (widgetListProductos ) => generateData(widgetListProductos),
+                                      headerData: headerData, 
+                                      dtaHeaderListProgress: () => headerProgress(), //TODOS progreso, ESPECIFICO.
+                                      dropContainer: (data) => dropDowButonbar(data, context), // La función que genera el dropdown
+                                      fotterButonBar: (widgetListProductos, _selecteds, _sourceOriginal) {
+                                        return fotterButonBar(
+                                          listaProductos: widgetListProductos,
+                                          selecteds: _selecteds,
+                                          sourceOriginal: _sourceOriginal,
+                                        );
                                       }, 
-                                    isDeleteForm: (context ,data , dynamic _initializeData() ) { 
-                                      return  ActionButtonTable().isDeleteForm(
+                                      applyFilter: (_sourceOriginal , value ) => DataUtils(_sourceOriginal).applyFilter(value), 
+                                      fomrView: (context , height , isFomView ,dataDrop , dynamic _initializeData() , dynamic isVisibleForm() ) {
+                                       return ActionButtonTable().fomrView(
                                               context: context,
-                                              data: data,
-                                              initializeData: () => _initializeData());
-                                     }, 
-                                  ),
-                                );
-                            }
-                          ),
+                                              height: height,
+                                              isFomView: isFomView,
+                                              dataDrops: dataDrop,
+                                              initializeData: () => _initializeData(),
+                                              isVisibleForm: () => isVisibleForm(),
+                                            );
+                                        }, 
+                                      isDeleteForm: (context ,data , dynamic _initializeData() ) { 
+                                        return  ActionButtonTable().isDeleteForm(
+                                                context: context,
+                                                data: data,
+                                                initializeData: () => _initializeData());
+                                       }, 
+                                    ),
+                                  );
+                              }
+                            ),
+                      ),
                     );
                   }).toList(),
                 ),

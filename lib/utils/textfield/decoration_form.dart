@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webandean/utils/colors/assets_colors.dart';
 class AssetDecorationTextField {
   
 static  InputDecoration decorationFormPDfView({Color fillColor = Colors.white, int padding = 0}) {
@@ -33,7 +34,7 @@ static  InputDecoration decorationFormPDfView({Color fillColor = Colors.white, i
     Widget? suffixIcon, 
     Color fillColor = Colors.white,}) {
   return InputDecoration(
-    contentPadding: EdgeInsets.all(0),
+    contentPadding: EdgeInsets.only(left: 15),
     isDense: true,
     labelText: labelText,
     prefixIcon: prefixIcon,
@@ -41,22 +42,22 @@ static  InputDecoration decorationFormPDfView({Color fillColor = Colors.white, i
     filled: true,
     fillColor:fillColor,
     suffixIcon: suffixIcon,
-    labelStyle:  TextStyle(color: Colors.blue.shade500, fontSize: 13),
-    hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+    labelStyle:  TextStyle(color: AppColors.menuTheme, fontSize: 13),
+    hintStyle: TextStyle(color: Colors.black54, fontSize: 13),
     border: OutlineInputBorder(
-      borderSide:  BorderSide(color: Colors.grey.shade300),
+      borderSide:  BorderSide(color: AppColors.menuTheme),
       borderRadius: BorderRadius.circular(10.0),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide:  BorderSide(color: Colors.grey.shade300),
+      borderSide:  BorderSide(color: AppColors.menuTheme),
       borderRadius: BorderRadius.circular(10.0),
     ),
     enabledBorder: OutlineInputBorder(
-     borderSide:  BorderSide(color: Colors.grey.shade300),
+     borderSide:  BorderSide(color: AppColors.menuTheme),
       borderRadius: BorderRadius.circular(10.0),
     ),
     errorBorder: OutlineInputBorder(
-      borderSide:  BorderSide(color: Colors.grey.shade300),
+      borderSide:  BorderSide(color: AppColors.menuTheme),
       borderRadius: BorderRadius.circular(10.0),
     ),
   );
@@ -96,28 +97,30 @@ static  InputDecoration decorationFormPDfView({Color fillColor = Colors.white, i
   );
 }
 
-static InputDecoration decorationTextFieldUnderLine({required String hintText}) {
-  const color = Color(0xFF5F3113);
+static InputDecoration decorationTextFieldUnderLine({
+  required String hintText, 
+  Color fillColor = Colors.white
+  }) {
+
   return InputDecoration(
-    // labelText: labelText,
-    hintText: hintText,
+    filled: true,
+    fillColor:fillColor,
+    labelText: hintText,
     focusColor: Colors.red,
-    contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-    labelStyle: const TextStyle(
-        color: Colors.blue, fontSize: 15, fontWeight: FontWeight.w300),
-    hintStyle: const TextStyle(color: Colors.black45, fontSize: 15),
-    // contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+    // contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+    labelStyle:  TextStyle(color: AppColors.menuTheme, fontSize: 13),
+    contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
     enabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: color.withOpacity(.5)),
+     borderSide:  BorderSide(color: AppColors.menuTheme),
     ),
     focusedBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: color.withOpacity(.5)),
+      borderSide:  BorderSide(color: AppColors.menuTheme),
     ),
     border: UnderlineInputBorder(
-      borderSide: BorderSide(color: color.withOpacity(.5)),
+      borderSide:  BorderSide(color: AppColors.menuTheme),
     ),
     errorBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: color.withOpacity(.5)),
+      borderSide:  BorderSide(color: AppColors.menuTheme),
     ),
   );
 }

@@ -8,6 +8,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:provider/provider.dart';
 import 'package:webandean/provider/cache/json_loading/provider_json.dart';
 import 'package:webandean/provider/cache/qr_lector/qr_lector_provider.dart';
+import 'package:webandean/utils/animations/assets_delayed_display.dart';
 import 'package:webandean/utils/colors/assets_colors.dart';
 import 'package:webandean/utils/dialogs/assets_dialog.dart';
 import 'package:webandean/utils/files%20assset/assets-svg.dart';
@@ -1204,8 +1205,299 @@ class FormWidgets {
       ),
     );
   }
-  
-  
+
+  //todos Exclusivo pra lisat de entregas  
+  Widget autocomleteSearchListEntregas({
+  required String title,
+  required List<dynamic> listaPadre, // Lista de opciones disponibles
+  required List<dynamic> listaHijo, // Lista que estamos editando
+  required String Function(dynamic producto) getName,
+  required String Function(dynamic producto) getQr,
+  required String Function(dynamic producto) getId,
+  //Valores protegidos 
+  required double Function(dynamic producto) getCantidadEnStock,
+  required bool Function(dynamic producto) getActive,
+  required String Function(dynamic producto) getObservacion,
+  //filtrado 
+  required bool Function(dynamic producto, String query) getField,
+  //mapeo 
+  required Map<String, dynamic> Function(dynamic producto) toJson,
+  required dynamic Function(Map<String, dynamic> json) fromJson,
+}) {
+  return Autocomplete<Object>(
+      // optionsBuilder: (TextEditingValue textEditingValue) {
+      //   if (textEditingValue.text.isEmpty) {
+      //     return Iterable<Object>.empty();
+      //   }
+      //   final query = textEditingValue.text.toLowerCase();
+      //   // Filtrar elementos de la lista padre basados en el query
+      //   return listaPadre.where((producto) => getField(producto, query)).cast<Object>();
+      // },
+      // optionsBuilder: (TextEditingValue textEditingValue) {
+      //   final query = textEditingValue.text.trim();
+      //   if (query.isEmpty || query.contains(RegExp(r'^\s*$'))) {
+      //     // Si solo contiene espacios, mostrar todas las opciones
+      //     return listaPadre.cast<Object>();
+      //   } else {
+      //     // Si tiene algún texto, filtrar las opciones
+      //     return listaPadre.where((producto) => getField(producto, query)).cast<Object>();
+      //   }
+      // },
+      optionsBuilder: (TextEditingValue textEditingValue) {
+          final query = textEditingValue.text;
+
+          // Si el texto está vacío, no mostrar ninguna opción
+          if (query.isEmpty) {
+            return Iterable<Object>.empty();
+          }
+
+          // Si el texto contiene solo espacios, mostrar todas las opciones
+          if (query.contains(RegExp(r'^\s+$'))) {
+            return listaPadre.cast<Object>();  // Mostrar todas las opciones si solo hay espacios
+          }
+
+          // Si el usuario escribe algo, filtrar las opciones según el query
+          return listaPadre.where((producto) => getField(producto, query)).cast<Object>();
+        },
+      displayStringForOption: (producto) => getName(producto),
+      fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+        return TextFormField(
+          controller: textEditingController,
+          focusNode: focusNode,
+          style: TextStyle(fontSize: 13, fontFamily: 'Quicksand'),
+           decoration: AssetDecorationTextField.decorationTextFieldRectangle(
+                labelText : 'añadir nuevo registro',
+                hintText : 'Escribe aqui',
+                suffixIcon: Icon(Icons.search, size: 16),
+                prefixIcon: textEditingController.text.isEmpty
+                    ? null
+                    : IconButton(
+                         onPressed: textEditingController.clear,
+                         icon: Icon( Icons.close, size: 16))
+                ),
+          onFieldSubmitted: (value) => onFieldSubmitted(),
+        );
+      },
+      onSelected: (dynamic producto) async {
+        // Verificar si el producto ya está en la lista hijo
+        bool noExiste = !listaHijo.any((item) => getId(item) == getId(producto) || getQr(item) == getQr(producto));
+        if (noExiste) {
+           // Crear copias locales de los valores para no afectar los datos originales
+            double cantidadEnStockLocal = getCantidadEnStock(producto);
+            String observacionLocal = getObservacion(producto);
+            bool isActiveLocal = getActive(producto);
+          // Mostrar confirmación antes de añadir
+           bool shouldAdd = await showDialog<bool>(
+                context: context,
+                builder: (context) {
+               TextToSpeechService().speak('¿Te gustaría añadir ${producto.nombre} como nuevo registro?');
+                return AssetAlertDialogPlatform(
+                  oK_textbuton: 'Añadir',
+                  actionButon: CupertinoDialogAction(
+                          child: Text('Cancelar'),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                  message: 'Deseas añadir este registro?. Personaliza la cantidad y los datos según lo que necesites.', 
+                  title: '${producto.nombre}', 
+                  child: Material(
+                    color: Colors.transparent,
+                    child: StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                        return Column(
+                          children: [
+                            TextFormField(
+                              initialValue: cantidadEnStockLocal.toString(),
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 1.5),
+                              decoration:AssetDecorationTextField.decorationTextFieldUnderLine(
+                                    hintText: 'Cantidad a entregar',
+                                    fillColor : Colors.transparent
+                                  ),
+                              keyboardType: TextInputType.numberWithOptions(decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+(\.\d{0,2})?$'), // Solo permite números con hasta dos decimales.
+                                ),
+                              ],
+                              onChanged: (value) {
+                                // Modificar el valor localmente sin afectar al producto original
+                                cantidadEnStockLocal = double.parse(value);
+                              },
+                            ),
+                            TextFormField(
+                              initialValue: observacionLocal,
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 1.5),
+                              decoration:AssetDecorationTextField.decorationTextFieldUnderLine(
+                                    hintText: 'Observación',
+                                    fillColor : Colors.transparent
+                                  ),
+                              onChanged: (value) {
+                                // Modificar el valor localmente sin afectar al producto original
+                                 observacionLocal = value;
+                              },
+                            ),
+                            SizedBox(height:10),
+                            SwitchListTile.adaptive(
+                              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                              visualDensity: VisualDensity.compact,
+                              dense: true,
+                              activeColor: Colors.red,
+                              inactiveThumbColor: Colors.white,
+                              inactiveTrackColor: Colors.green.shade600,
+                              title:  Chip(
+                              backgroundColor: AppColors.menuHeaderTheme,
+                              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                              visualDensity: VisualDensity.compact,
+                              // side: BorderSide.none,
+                              label: P1Text(text:isActiveLocal
+                                    ? 'COMPRAR 😡🛑' // Rojo para advertir
+                                    : 'NO COMPRAR 😊', // Verde para indicar que está todo bien
+                                  fontSize: 13,
+                                  color:  Colors.black)
+                                  ),
+                                  value: isActiveLocal,
+                                  onChanged: (value) {
+                                    // Modificar el valor localmente sin afectar al producto original
+                                      setState(() {
+                                        isActiveLocal = value;
+                                      });
+                                  },
+                              
+                            )
+                          ],
+                        );
+                      }
+                    ),
+                  ),
+                  );
+              }
+            ) ?? true;
+
+          if (!shouldAdd) {
+            // Cuando se haya confirmado que el producto se debe añadir, se puede crear un nuevo producto
+              // usando los valores modificados (y no los originales)
+               producto = fromJson({
+                ...toJson(producto), // Copiar todos los valores del nuevo producto
+                  'cantidad_en_stock': cantidadEnStockLocal, // Mantener valores protegidos
+                   'active': isActiveLocal,  // Nuevo valor para 'active'
+                   'observacion': observacionLocal, // Nuevo valor para 'observacion'
+                });
+
+             listaHijo.add(producto);
+             TextToSpeechService().speak('Nuevo valor ingresado. ${producto.nombre}');
+          }
+           else { TextToSpeechService().speak('El valor ${getName(producto)} no fue añadido.');}
+        } else {
+            // Mostrar confirmación antes de añadir
+            bool shouldAdd = await showDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                  TextToSpeechService().speak('${getName(producto)} ya está en la lista. ¿Te gustaría sobrescribir este registro?');
+
+                  
+                  return AssetAlertDialogPlatform(
+                    actionButon: CupertinoDialogAction(
+                          child: Text('Cancelar'),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                    oK_textbuton: 'Sobreescribir',
+                    message: 'Deseas Sobreescribir este registro?', 
+                    title: '${producto.nombre}');
+                }
+              ) ?? true;
+               if (!shouldAdd) {
+                 // Buscar todos los productos con el mismo ID en la lista hijo
+                  listaHijo.asMap().forEach((index, item) {
+                    if (getId(item) == getId(producto)) {
+                     // Mantener los valores protegidos y actualizar los demás campos manualmente
+                      listaHijo[index] = fromJson({
+                        ...toJson(producto), // Copiar todos los valores del nuevo producto
+                        'cantidad_en_stock': getCantidadEnStock(item), // Mantener valores protegidos
+                        'active': getActive(item),
+                        'observacion': getObservacion(item),
+                      });
+
+                      TextToSpeechService().speak('El producto ${getName(producto)} en la posición $index ha sido actualizado manteniendo los valores protegidos.');
+                    }
+                  });
+              }
+              else { TextToSpeechService().speak('El valor ${getName(producto)} no fue añadido.');}
+        }
+      },
+      optionsViewBuilder: (context, onSelected, options) {
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4.0,
+            child: Container(
+              width: 300,
+              // child: ListView(
+              //   padding: EdgeInsets.symmetric(vertical: 8),
+              //   children: options.map((dynamic producto) {
+              //     return ListTile(
+              //       leading: Icon(Icons.folder_open_outlined, color: Colors.blue),
+              //       title: Text(getName(producto), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              //       subtitle: Text('ID: ${getId(producto)}\nQR: ${getQr(producto)}'),
+              //       onTap: () => onSelected(producto),
+              //     );
+              //   }).toList(),
+              // ),
+              child: ScrollWeb(
+                child: ListView.builder(
+                padding: EdgeInsets.only(bottom: 120),
+                itemCount: options.length,
+                itemBuilder: (context, index) {
+                // Convertimos el Iterable a una lista para poder acceder por índice
+                  dynamic producto = options.toList()[index]; 
+                  print(index);
+                  return ListTile(
+                    leading: Icon(Icons.folder_open_outlined, color: Colors.blue),
+                    title: H3Text(text: getName(producto)),
+                    subtitle: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'ID: ',
+                              style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(
+                              text: getId(producto),
+                              style: TextStyle(color: Colors.blue, fontSize: 12),
+                            ),
+                            TextSpan(
+                              text: '\nQR: ',
+                              style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(
+                              text: getQr(producto),
+                              style: TextStyle(color: Colors.green, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    onTap: () => onSelected(producto),
+                    trailing:  Chip(
+                       backgroundColor: Colors.white,
+                       padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                       visualDensity: VisualDensity.compact,
+                       label: P3Text(text:'${getCantidadEnStock(producto)}', 
+                       fontWeight: FontWeight.bold),
+                    )
+                  );
+                },
+                            ),
+              ),
+            ),
+          ),
+        );
+      },
+  );
+}
+
+
   
   
  Widget autocomplete_IDRelationForm({
@@ -1371,187 +1663,7 @@ class FormWidgets {
 }
 
 
-// Widget autocompleteMulti_IDRelationForm({
-//   required String labelText,
-//   required TextEditingController controller, // El controller se pasa como parámetro
-//   required bool Function(dynamic producto, String query) getField,
-//   required String Function(dynamic producto) getName,
-//   required String Function(dynamic producto) getQr,
-//   required String Function(dynamic producto) getId,
-//   required List<dynamic> listaProducto,
-// }) {
 
-//   // Convierte el contenido del controller en una lista de IDs seleccionados
-//   List<String> _getSelectedOptions() {
-//     return controller.text.isEmpty ? [] : controller.text.split(', ');
-//   }
-
-
-//   // Actualiza el controlador con la lista de IDs seleccionados
-//   void _updateController(List<String> options) {
-//     controller.text = options.join(', ');
-//   }
-
-//   return Autocomplete<Object>(
-//     optionsBuilder: (TextEditingValue textEditingValue) {
-//       if (textEditingValue.text.isEmpty) {
-//         return const Iterable<Object>.empty();
-//       }
-  
-//       final query = textEditingValue.text.toLowerCase();
-  
-//       // Filtra los productos según el texto ingresado en cualquier campo relevante
-//         return listaProducto
-//             .where((producto) => getField(producto, query))
-//             .cast<Object>();
-//     },
-//     displayStringForOption: (producto) => getName(producto), // Muestra el nombre del producto
-  
-//     fieldViewBuilder: (context, _isController, focusNode, onFieldSubmitted) {
-//       return Container(
-//             margin: EdgeInsets.only(bottom: 10),
-//             child: ListTile(
-//               contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-//               visualDensity: VisualDensity.compact,
-//               dense: true,
-//               minVerticalPadding: 0,
-//               title: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       P3Text(
-//                           text: '${labelText.toUpperCase()}',
-//                           height: 2,
-//                           fontWeight: FontWeight.bold,
-//                                                ),
-//                        P3Text(
-//                           text: '(Selecion Multiple)',
-//                        ),
-//                     ],
-//                   ),
-                  
-//               subtitle:  Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-                 
-//                    if (_getSelectedOptions().isNotEmpty)
-//                     Wrap(
-//                       spacing: 2.0,
-//                       children: controller.text.split(', ').map((id) {
-//                         return Chip(
-//                           backgroundColor: AppColors.menuHeaderTheme,
-//                           padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-//                           visualDensity: VisualDensity.compact,
-//                           side: BorderSide.none,
-//                           label: P3Text(text: id,  color: AppColors.menuTextDark,),
-//                           onDeleted: () {
-//                             List<String> currentOptions = _getSelectedOptions();
-//                             currentOptions.remove(id);
-//                             _updateController(currentOptions);
-//                           },
-//                         );
-//                       }).toList(),
-//                     ),
-//                   TextFormField(
-//                   controller: _isController,
-//                   focusNode: focusNode,
-//                   style: TextStyle(fontSize: 13, fontFamily: 'Quicksand'),
-//                   decoration: AssetDecorationTextField.decorationTextField(
-//                   hintText: 'Buscar Item',
-//                   labelText: 'Escribe aqui',
-//                   suffixIcon: Icon(Icons.search, size: 16),
-//                   prefixIcon: _isController.text.isEmpty
-//                       ? null
-//                       : IconButton(
-//                           onPressed: () {
-//                             _isController.clear();
-//                             // controller.clear();
-//                           },
-//                           icon: Icon(
-//                             Icons.close,
-//                             size: 16,
-//                             color: Colors.grey,
-//                           ),
-//                         ),
-//                               ),
-//                      onFieldSubmitted: (value) => onFieldSubmitted(),
-//                     //  onChanged: (value) {
-//                     //   // Validar si el valor existe en la lista de productos
-//                     //   final exists = listaProducto.any((producto) => getField(producto, value));
-//                     //   if (exists) {
-//                     //     TextToSpeechService().speak('El valor ingresado sí existe.');
-//                     //   } else {
-//                     //     TextToSpeechService().speak('El valor ingresado no existe.');
-//                     //   }
-//                     // },
-//                   ),
-  
-//                 ],
-//               ),
-//         ),
-//       );
-//     },
-  
-//     onSelected: (dynamic producto) {
-//       // Actualiza el controlador con el ID del producto seleccionado
-//       // controller.text = getId(producto);
-//       // Agrega el ID del producto seleccionado a la lista
-//       List<String> selectedOptions = _getSelectedOptions();
-//       final id = getId(producto);
-//       if (!selectedOptions.contains(id)) {
-//         selectedOptions.add(id);
-//         _updateController(selectedOptions);
-//       }
-     
-//     },
-  
-//     optionsViewBuilder: (context, onSelected, options) {
-//       return Align(
-//         alignment: Alignment.topLeft,
-//         child: Material(
-//           elevation: 4.0,
-//           child: Container(
-//             width: 300,
-//             child: ScrollWeb(
-//               child: ListView(
-//                 padding: EdgeInsets.symmetric(vertical: 8),
-//                 children: options.map((producto) {
-//                   return Container(
-//                     constraints: BoxConstraints(maxWidth: 300),
-//                     decoration: BoxDecoration(color: AppColors.menuHeaderTheme.withOpacity(.5)),
-//                     padding: EdgeInsets.only(bottom: 5, right: 10, left: 10),
-//                     margin: EdgeInsets.only(bottom: 1),
-//                     child: ListTile(
-//                       contentPadding: EdgeInsets.zero,
-//                       visualDensity: VisualDensity.compact,
-//                       leading: Icon(Icons.folder_open_outlined, color: Colors.blue),
-//                       title: H3Text(text:
-//                         getName(producto),
-//                         fontSize: 12, fontWeight: FontWeight.bold,
-//                         color: AppColors.menuTextDark
-//                       ),
-//                       subtitle: RichText(
-//                         text: TextSpan(
-//                           style: TextStyle(color: AppColors.menuTheme , fontSize: 11),
-//                           children: [
-//                             TextSpan(text: 'ID  :   ', style: TextStyle(fontWeight: FontWeight.bold)),
-//                             TextSpan(text: getId(producto)),
-//                             TextSpan(text: '\nQR :   ', style: TextStyle(fontWeight: FontWeight.bold)),
-//                             TextSpan(text: getQr(producto)),
-//                           ],
-//                         ),
-//                       ),
-//                       onTap: () => onSelected(producto),
-//                     ),
-//                   );
-//                 }).toList(),
-//               ),
-//             ),
-//           ),
-//         ),
-//       );
-//     },
-//   );
-// }
   
   Widget autocompleteMulti_IDRelationForm({
   required String labelText,

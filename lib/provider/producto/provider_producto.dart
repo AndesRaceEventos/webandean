@@ -312,8 +312,10 @@ Future<void> refreshProvider() async {
   
 
   // //TODOS CLASIFICACION DE DATOS
-  Map<String, List<TProductosAppModel>> groupByDistance({required List<TProductosAppModel> listData, required String fieldName}) {
+  Map<String, List<TProductosAppModel>> groupByDistance({
+    required List<TProductosAppModel> listData, required String fieldName}) {
     Map<String, List<TProductosAppModel>> groupedData = {};
+
     String value;
 
     for (var e in listData) {

@@ -1,6 +1,9 @@
 
 
+import 'package:webandean/model/entregas/model_lista_equipos.dart';
+import 'package:webandean/model/entregas/model_lista_productos.dart';
 import 'package:webandean/model/equipo/model_equipo.dart';
+import 'package:webandean/model/personal/model_personal_apu.dart';
 import 'package:webandean/model/producto/model_producto.dart'; 
 import 'package:webandean/utils/conversion/assets_format_values.dart';
 
@@ -12,11 +15,6 @@ class TEntregasModel {
     DateTime? created;
     DateTime? updated;
 
-    List<String> idReserva;//Pueden ser varios ID Reserva
-    List<String> idPersonal;//Pueden ser varios ID de PEROSNAL  
-
-    String idListaCompra;//
-    String idListaEquipos;//
 
     List<TEquiposAppModel>? listaEquipos; // 
     List<TProductosAppModel>? listaProducto; //
@@ -28,6 +26,17 @@ class TEntregasModel {
     String imagen;//
     bool active;//
     String? html;
+
+    List<String> idReserva;//Pueden ser varios ID Reserva
+    List<String> idPersonal;//Pueden ser varios ID de PEROSNAL  
+
+    String idListaCompra;//
+    String idListaEquipos;//
+
+    //TODOS EXTRAS PARA ASINGAR EL VALOR DEL VALUE 
+    List<TPersonalApuModel>? idPersonalValue;
+    TListaEntregaEquiposModel? idListaEquiposValue;
+    TListaEntregaProductosModel? idListaProductosValue;
 
     TEntregasModel({
         required this.id,
@@ -50,7 +59,12 @@ class TEntregasModel {
 
         required this.observacion,
 
-         this.html,
+         this.html,  
+
+         this.idPersonalValue, 
+         this.idListaEquiposValue,
+         this.idListaProductosValue,
+
     });
 
     factory TEntregasModel.fromJson(Map<String, dynamic> json) => TEntregasModel(
@@ -80,7 +94,8 @@ class TEntregasModel {
         // listaProducto: json["lista_producto"],
         listaProducto: FormatValues.listaFromJson<TProductosAppModel>
           (json["lista_producto"], TProductosAppModel.fromJson , TProductosAppModel.defaultValueModel),
-    );
+   
+     );
 
     Map<String, dynamic> toJson() => {
         "id": id,

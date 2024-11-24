@@ -1,4 +1,5 @@
 import 'package:webandean/local_storage/shared_preferences/shaerd_preferences.dart';
+import 'package:webandean/pages/entregas/entrega%20general/idRelation%20expand/config_values_idrelations.dart';
 import 'package:webandean/pages/home/menu_principal.dart';
 import 'package:flutter/material.dart';
 import 'package:webandean/provider/cache/menuWeb/menu_state.dart';
@@ -162,7 +163,9 @@ class CardUsuario extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 1),
       child: ListTile(
         onTap: () {
-          //TODO : poner accion de editar perfil
+          //TODO : poner accion de editar perfil\
+          
+          
         },
         contentPadding: EdgeInsets.symmetric(horizontal: 5),
         visualDensity: VisualDensity.compact,

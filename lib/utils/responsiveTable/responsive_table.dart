@@ -33,6 +33,7 @@ class ResponsiveTableCustom extends StatefulWidget {
     required this.fotterButonBar, 
      this.dtaHeaderListProgress, 
       this.dtaHeaderListProgress2, 
+      this.expandIdRealtion,
     
     required this.headerData, 
     required this.generateData, 
@@ -48,6 +49,9 @@ class ResponsiveTableCustom extends StatefulWidget {
   final Widget Function(List<dynamic>, List<Map<String, dynamic>>, List<Map<String, dynamic>>) fotterButonBar; // Función para el dropdown
   final Function()? dtaHeaderListProgress;
   final Function()? dtaHeaderListProgress2;
+
+  final Function()? expandIdRealtion;//Sirve para cargar lo metodo de ID y asignales sus valores. 
+
 
   final List<Map<String, dynamic>>  headerData;
   final List<Map<String, dynamic>>  Function(List<dynamic> ) generateData;
@@ -377,22 +381,23 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
                       },
                       //********************  ESPECIFICOS  ****************
       
-                      title: TextButton(
+                      title: IconButton(
+                        padding: EdgeInsets.symmetric(vertical: 0),
+                        visualDensity: VisualDensity.compact,
+                        selectedIcon: AppSvg(width: 40).createSvg,
                         onPressed: () {
                           setState(() {
                             isFomView = !isFomView;
                             print(isFomView);
                           });
                         },
-                        child: Container(
-                          decoration: AssetDecorationBox().selectedDecoration(color: Colors.white),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        icon:  Container(
+                          decoration: AssetDecorationBox().decorationBox(color: Colors.green.shade700),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              AppSvg().createFilledSvg,
-                              H3Text(text: 'Nuevo')
+                              AppSvg(width: 40, color: Colors.white60).createFilledSvg,
+                              H3Text(text: 'Nuevo  ', color: Colors.white), 
                             ],
                           ),
                         ),
@@ -496,17 +501,46 @@ class _ResponsiveTableCustomState extends State<ResponsiveTableCustom> {
           }
         ),
       if (!_isSearch)
-        AppIconButon(
-            tooltip: 'Buscar',
-            child: const Icon(
-              Icons.search_outlined,
-              color: Colors.blue,
+         Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+          if(widget.expandIdRealtion != null)
+          IconButton(
+            padding: EdgeInsets.symmetric(vertical: 0),
+            visualDensity: VisualDensity.compact,
+            tooltip: 'Presiona para cargar datos full',
+            icon:Container(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              decoration: AssetDecorationBox().selectedDecoration(color: Colors.lime.shade400),
+              child: Row(
+               mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppSvg(width: 32).expandSvg,
+                  H3Text(text: ' Expand'),
+                ],
+              ),
+            ),
+            onPressed: widget.expandIdRealtion),
+          SizedBox(width: 8),
+          IconButton(
+            tooltip: 'Presiona para Buscar un item',
+            padding: EdgeInsets.symmetric(vertical: 0),
+            visualDensity: VisualDensity.compact,
+            icon:Container(
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              decoration: AssetDecorationBox().selectedDecoration(color: Colors.blue.shade500),
+              child: const Icon(
+                Icons.search_outlined,
+                color: Colors.white, size: 30,
+              ),
             ),
             onPressed: () {
               setState(() {
                 _isSearch = true;
               });
             }),
+            
+        ],)
     ];
   }
 

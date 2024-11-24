@@ -2,10 +2,7 @@ import 'dart:typed_data';
 
 import 'package:pocketbase/pocketbase.dart';
 import 'package:webandean/api/api_poketbase.dart';
-
-
 import 'package:webandean/poketbase/procesing_files_poketbase.dart';
-
 import 'package:webandean/model/entregas/model_entregas_general.dart';
 
 
@@ -21,10 +18,11 @@ class TEntregasGApp {
       e.data['updated'] = DateTime.parse(e.updated);
       e.data['collectionId'] = e.collectionId;
       e.data['collectionName'] = e.collectionName;
+    // print(e.data['expand']); // Para depuración
       return TEntregasModel.fromJson(e.data);
     }).toList();
   }
-
+  
   static Future<List<RecordModel>> getToPoketbase( {
       String? filter= '',
       String? sort = '-created',
@@ -33,7 +31,7 @@ class TEntregasGApp {
       try {
         final records = await pb.collection('$collectionName').getFullList(
           filter: '${filter}' , //'categoria_compras="VIVERES"' 'categoria_compras="VERDURAS" && active=true',
-          expand: expand,
+          expand: expand, // 'id_reserva,id_personal,id_lista_compra,id_lista_equipos',// // Expandir relaciones,
           sort: sort,
           // fields: ['ubicacion','nombre'].join(',') ?? ''
           );

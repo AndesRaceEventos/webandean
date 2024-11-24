@@ -67,8 +67,8 @@ DatatableHeader headerProgress() {
 
         double valorUSD         =   totalesDistribucionPorMoneda['USD']             ??     0.0;
         double valorPEN         =   totalesDistribucionPorMoneda['PEN']             ??     0.0;
-        double totalEnSoles     =   totalesDistribucionPorMoneda['TotalEnSoles']    ??     0.0;
-        double totalEnDolares   =   totalesDistribucionPorMoneda['TotalEnDolares']  ??     0.0;
+        double totalEnSoles     =   totalesDistribucionPorMoneda['TOTAL_PEN']    ??     0.0;
+        double totalEnDolares   =   totalesDistribucionPorMoneda['TOTAL_USD']  ??     0.0;
 
         double maxWidth =   150;//150
 

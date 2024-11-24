@@ -66,6 +66,7 @@ class TEntregasAppProvider with ChangeNotifier {
       }
     });                 
   }
+ 
 
 bool hasUpdates = false; // Variable para rastrear si hubo actualizaciones
  //GET.:  Método para obtener Respuesta
@@ -87,14 +88,9 @@ bool hasUpdates = false; // Variable para rastrear si hubo actualizaciones
         notifyListeners();
         return;// Detenemos el flujo aquí.
       }
-    
-    // // Si hay productos, se procesan y se actualiza la lista.
-    // List<TProductosAppModel> productos = TProductosApp.processResponse(response);
-    // listProductos.clear();
-    // listProductos.addAll(productos);
-    // notifyListeners();
-    // Procesa la respuesta y verifica si los datos cambiaron
+
     List<TEntregasModel> productos = TEntregasGApp.processResponse(response);
+    
     if (listProductos.length != productos.length || !listProductos.toSet().containsAll(productos.toSet())) {
       // Actualiza la lista solo si hay cambios
       listProductos.clear();

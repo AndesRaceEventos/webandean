@@ -31,8 +31,53 @@ class AppIconButon extends StatelessWidget {
   }
 }
 
+class AppIconButoonELegant extends StatelessWidget {
+  const AppIconButoonELegant(
+    {super.key, 
+    this.onPressed, 
+    this.label,
+    required this.icon, 
+    this.tooltip, 
+    this.colorlabel = Colors.black,
+    this.colorButon = Colors.white, 
+    this.height = 40.0,
+    });
+
+  final Function()? onPressed;
+  final String? label;
+  final Widget icon;
+  final String? tooltip;
+  final Color? colorlabel;
+  final Color? colorButon;
+  final double height;
+  
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        tooltip: tooltip,
+         padding: EdgeInsets.symmetric(vertical: 0),
+         visualDensity: VisualDensity.compact,
+         onPressed: onPressed,
+         icon:  Container(
+            height: height,
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+           decoration: AssetDecorationBox().decorationBox(color: colorButon),
+           child: Row(
+             mainAxisSize: MainAxisSize.min,
+             children: [
+              icon,
+              if(label != null)
+              H3Text(text: label!, color: colorlabel!), 
+             ],
+           ),
+         ),
+    );
+  }
+}
 
 
+//Reciben u nbool para activar el loading 
 class AppSaveButonForm extends StatelessWidget {
   const AppSaveButonForm({super.key,required this.onPressed, required this.isLoading});
   final Function() onPressed;

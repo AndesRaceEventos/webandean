@@ -8,6 +8,18 @@ class AppSvg {
 
   AppSvg({this.width = 30, this.color});
   //IMAGENES FONDO APP
+  //back.svg
+  late final backSvg = SvgPicture.asset(
+    'assets/svg/back.svg',
+    width: width,
+    color: color,
+  );
+  //expand.svg
+  late final expandSvg = SvgPicture.asset(
+    'assets/svg/expand.svg',
+    width: width,
+    color: color,
+  );
   //delivery.svg
   late final deliverySvg = SvgPicture.asset(
     'assets/svg/delivery.svg',

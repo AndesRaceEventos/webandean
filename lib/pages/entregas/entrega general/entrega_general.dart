@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webandean/pages/entregas/entrega%20general/idRelation%20expand/config_values_idrelations.dart';
 
 import 'package:webandean/utils/poketbase/get_filterpoketbase.dart';
 import 'package:webandean/utils/button/asset_buton_widget.dart';
@@ -52,7 +53,7 @@ class _PageResponsiveProductos extends StatefulWidget {
 
 class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
   
-
+  int selectedIndex = 0; // Para saber cuál pestaña está activa TAbbaView 
 
   String? _selectedProduct;
 
@@ -65,6 +66,10 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
   void initState() {
     super.initState();
     _filterseachController = TextEditingController();
+     // Limpiar la búsqueda para evitar que los datos filtrados persistan innecesariamente
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    Provider.of<TEntregasAppProvider>(context, listen : false).clearSearch([]);
+    });
   }
 
   @override
@@ -87,9 +92,23 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
 
     final groupedData = dataProvider.groupByDistance( listData: searchProvider, fieldName: _selectedProduct ?? 'Todos');
 
+     // Validar y ajustar el índice seleccionado
+    if (selectedIndex >= groupedData.keys.length) {
+      selectedIndex = 0; // Restablece al primer índice disponible
+    }
      
-    return DefaultTabController(
+    return  groupedData.keys.isEmpty
+        ? Center(
+          child: AppIconButoonELegant(
+          colorButon: AppColors.menuIconColor,
+          colorlabel: AppColors.menuHeaderTheme,
+          onPressed: () => isSeachVisible(dataProvider, listProductos),
+          label: 'No hay resultados, ¿otra búsqueda? 🔍👀',
+          icon: Icon(Icons.close, size: 30, color: AppColors.menuHeaderTheme)))
+
+        : DefaultTabController(
       length: groupedData.keys.length,
+       initialIndex: selectedIndex,
       child: Scaffold(
          //Trasnparente para la imgen de fondo
           backgroundColor:Colors.transparent,
@@ -183,11 +202,16 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
                   overlayColor: WidgetStatePropertyAll(Colors.transparent),
                   indicatorWeight: 1,
                   // dividerHeight: 0,
+                 onTap: (index) {
+                  setState(() {
+                    selectedIndex = index; // Actualiza el índice seleccionado
+                  });
+                },
                   tabs: groupedData.keys.map((String tabTitle) {
                     print(tabTitle);
                     return Tab(
                       iconMargin: EdgeInsets.all(0),
-                      height: 32,
+                      height: 40,
                       icon: TextTabBarTable(
                         groupedData: groupedData,
                         tabTitle: tabTitle,
@@ -204,70 +228,81 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
                 child: TabBarView(
                   physics: const NeverScrollableScrollPhysics(),
                   children: groupedData.keys.map((String distancias) {
-                    return AssetsAnimationSwitcher(
-                      duration: 600,
-                      child: istransition
-                          ? MyGridView(
-                              groupedData: groupedData, 
-                              distancias: distancias,
-                              childrenBuilder: (value, constraints) {
-                               // Casteamos el dynamic a TProductosAppModel
-                               final TEntregasModel e = value as TEntregasModel;
-                                return  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      H2Text(
-                                        text: e.qr,
-                                        fontSize: 11,
-                                        selectable: true,
-                                      ),
-                                      H2Text(
-                                        text: e.nombre,
-                                        fontSize: 11,
-                                        selectable: true,
-                                      ),
-                                    ],
-                                  );
-                              },
-                            )
-                          : Builder(
-                            builder: (context) {
-                              return  ScrollWeb(
-                                  child:  ResponsiveTableCustom(
-                                    listProductos: groupedData[distancias]!,//Lista Datos
-                                    generateData: (widgetListProductos ) => generateData(widgetListProductos),
-                                    headerData: headerData, 
-                                    dtaHeaderListProgress: () => headerProgress(), //TODOS progreso, ESPECIFICO.
-                                    dtaHeaderListProgress2: () => headerProgress2(),
-                                    dropContainer: (data) => dropDowButonbar(data), // La función que genera el dropdown
-                                    fotterButonBar: (widgetListProductos, _selecteds, _sourceOriginal) {
-                                      return fotterButonBar(
-                                        listaProductos: widgetListProductos,
-                                        selecteds: _selecteds,
-                                        sourceOriginal: _sourceOriginal,
-                                      );
-                                    }, 
-                                    applyFilter: (_sourceOriginal , value ) => DataUtils(_sourceOriginal).applyFilter(value), 
-                                    fomrView: (context , height , isFomView ,dataDrop , dynamic _initializeData() , dynamic isVisibleForm() ) {
-                                     return ActionButtonTable().fomrView(
-                                            context: context,
-                                            height: height,
-                                            isFomView: isFomView,
-                                            dataDrops: dataDrop,
-                                            initializeData: () => _initializeData(),
-                                            isVisibleForm: () => isVisibleForm(),
-                                          );
+                    
+                    int index = groupedData.keys.toList().indexOf(distancias);
+                     
+                    if(selectedIndex != index) return Container();
+
+                    return Offstage(
+                      offstage: selectedIndex != index, // Solo muestra el contenido si está activo
+                      child: AssetsAnimationSwitcher(
+                        duration: 600,
+                        child: istransition
+                            ? MyGridView(
+                                groupedData: groupedData, 
+                                distancias: distancias,
+                                childrenBuilder: (value, constraints) {
+                                 // Casteamos el dynamic a TProductosAppModel
+                                 final TEntregasModel e = value as TEntregasModel;
+                                  return  Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        H2Text(
+                                          text: e.qr,
+                                          fontSize: 11,
+                                          selectable: true,
+                                        ),
+                                        H2Text(
+                                          text: e.nombre,
+                                          fontSize: 11,
+                                          selectable: true,
+                                        ),
+                                      ],
+                                    );
+                                },
+                              )
+                            : Builder(
+                              builder: (context) {
+                                return  ScrollWeb(
+                                    child:  ResponsiveTableCustom(
+                                      expandIdRealtion: () {
+                                        filterAsginalIDRelaions(context); /// Esto es personalizado 
+                                      },
+                                      listProductos: groupedData[distancias]!,//Lista Datos
+                                      generateData: (widgetListProductos ) => generateData(widgetListProductos),
+                                      headerData: headerData, 
+                                      dtaHeaderListProgress: () => headerProgress(), //TODOS progreso, ESPECIFICO.
+                                      dtaHeaderListProgress2: () => headerProgress2(),
+                                      dropContainer: (data) => dropDowButonbar(data), // La función que genera el dropdown
+                                      fotterButonBar: (widgetListProductos, _selecteds, _sourceOriginal) {
+                                        return fotterButonBar(
+                                          listaProductos: widgetListProductos,
+                                          selecteds: _selecteds,
+                                          sourceOriginal: _sourceOriginal,
+                                        );
                                       }, 
-                                    isDeleteForm: (context ,data , dynamic _initializeData() ) { 
-                                      return  ActionButtonTable().isDeleteForm(
+                                      applyFilter: (_sourceOriginal , value ) => DataUtils(_sourceOriginal).applyFilter(value), 
+                                      fomrView: (context , height , isFomView ,dataDrop , dynamic _initializeData() , dynamic isVisibleForm() ) {
+                                       return ActionButtonTable().fomrView(
                                               context: context,
-                                              data: data,
-                                              initializeData: () => _initializeData());
-                                     }, 
-                                  ),
-                                );
-                            }
-                          ),
+                                              height: height,
+                                              isFomView: isFomView,
+                                              dataDrops: dataDrop,
+                                              initializeData: () => _initializeData(),
+                                              isVisibleForm: () => isVisibleForm(),
+                                            );
+                                        }, 
+                                      isDeleteForm: (context ,data , dynamic _initializeData() ) { 
+                                        return  ActionButtonTable().isDeleteForm(
+                                                context: context,
+                                                data: data,
+                                                initializeData: () => _initializeData());
+                                       }, 
+                                    ),
+                                  );
+                              }
+                            ),
+                      ),
                     );
                   }).toList(),
                 ),

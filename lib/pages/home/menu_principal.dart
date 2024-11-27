@@ -6,6 +6,7 @@ import 'package:webandean/pages/home/dashboard_page.dart';
 import 'package:webandean/pages/itinerarios/itinerarios.dart';
 import 'package:webandean/pages/personal/personal.dart';
 import 'package:webandean/pages/producto/productos.dart';
+import 'package:webandean/utils/layuot/asset_column_widths.dart';
 import 'package:webandean/utils/qr_lector/qr-lector.dart';
 import 'package:webandean/provider/cache/menuWeb/menu_state.dart';
 import 'package:webandean/utils/animations/assets_delayed_display.dart';

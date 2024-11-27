@@ -5,6 +5,7 @@ import 'package:webandean/utils/poketbase/get_filterpoketbase.dart';
 import 'package:webandean/utils/button/asset_buton_widget.dart';
 import 'package:webandean/utils/colors/assets_colors.dart';
 import 'package:webandean/utils/dialogs/assets_dialog.dart';
+import 'package:webandean/utils/responsiveTable/search_transition/search_view_global.dart';
 import 'package:webandean/utils/responsiveTable/title_table/title_tabbar.dart';
 import 'package:webandean/utils/responsiveTable/title_table/title_table.dart';
 import 'package:webandean/utils/speack/assets_speack.dart';
@@ -98,13 +99,9 @@ int selectedIndex = 0; // Para saber cuál pestaña está activa TAbbaView
     }
      
     return  groupedData.keys.isEmpty
-        ? Center(
-          child: AppIconButoonELegant(
-          colorButon: AppColors.menuIconColor,
-          colorlabel: AppColors.menuHeaderTheme,
-          onPressed: () => isSeachVisible(dataProvider, listProductos),
-          label: 'No hay resultados, ¿otra búsqueda? 🔍👀',
-          icon: Icon(Icons.close, size: 30, color: AppColors.menuHeaderTheme)))
+          ? Erro404Page(
+            onPressed: () => isSeachVisible(dataProvider, listProductos),
+        )
 
         : DefaultTabController(
       length: groupedData.keys.length,
@@ -118,38 +115,17 @@ int selectedIndex = 0; // Para saber cuál pestaña está activa TAbbaView
               elevation: 0,
               surfaceTintColor: Colors.transparent,
               // centerTitle: true,
-              title: AssetsAnimationSwitcher(
-                isTransition: true,
-                duration: 700,
-                child: isSearch
-                    ? Container(
-                      constraints: BoxConstraints(maxWidth: 350, maxHeight: 45),
-                      child: TextField(
-                          controller: _filterseachController,
-                          decoration: AssetDecorationTextField.decorationTextField(
-                            hintText: 'Escriba aquí',
-                            labelText: 'Buscar',
-                            fillColor: Colors.white,
-                            prefixIcon: Icon(Icons.search),
-                            suffixIcon: IconButton(
-                              onPressed: () => isSeachVisible(dataProvider, listProductos),
-                              icon: Icon(Icons.close, size: 20))
-                          ),
-                          //Fitrar mientras escribes 
-                          onChanged: (value) => dataProvider.setSearchText(value, dataProvider.listProductos),
-                          //TODOS presionar enter para buscar
-                          // onSubmitted: (value) {
-                          //   dataParticipantes.setSearchText(
-                          //       value, dataParticipantes.listProductos);
-                          // },
-                        ),
-                    )
-                    : TitleTableSlected(
-                        selectedProduct: _selectedProduct,
-                        listProductos: listProductos, 
-                        istransition: istransition,//is tabla o image 
-                         onTap: () => isSeachVisible(dataProvider, listProductos),),
-              ),
+               title: SearchIstransitionItem2(
+                controller: _filterseachController,
+                isSearch: isSearch ,
+                onCloseSeach: () => isSeachVisible(dataProvider, listProductos),
+                onSearch:  (value) => dataProvider.setSearchText(value, dataProvider.listProductos),
+                child: TitleTableSlected(
+                  selectedProduct: _selectedProduct,
+                  listProductos: listProductos, 
+                  istransition: istransition,//is tabla o image 
+                   onTap: () => isSeachVisible(dataProvider, listProductos),),
+                ),
               actions: [
                 ClasificarButton(
                   keyJson: '${dataProvider.collectionName}', //ESPECIFICAR
@@ -192,15 +168,7 @@ int selectedIndex = 0; // Para saber cuál pestaña está activa TAbbaView
                         ? AssetsCircularProgreesIndicator()
                         : AppSvg().refreshSvg),
               ],
-              bottom: TabBar(
-                  dividerColor: Colors.transparent,
-                  indicatorColor: AppColors.warningColor,
-                  isScrollable: true,
-                  labelPadding: EdgeInsets.only(right: 5, bottom: 3),
-                  indicatorPadding: EdgeInsets.all(0),
-                  overlayColor: WidgetStatePropertyAll(Colors.transparent),
-                  indicatorWeight: 1,
-                  // dividerHeight: 0,
+              bottom: TabBarCustom(
                   onTap: (index) {
                   setState(() {
                     selectedIndex = index; // Actualiza el índice seleccionado
@@ -211,11 +179,7 @@ int selectedIndex = 0; // Para saber cuál pestaña está activa TAbbaView
                     return Tab(
                       iconMargin: EdgeInsets.all(0),
                       height: 32,
-                      icon: TextTabBarTable(
-                        groupedData: groupedData,
-                        tabTitle: tabTitle,
-                      ),
-                    );
+                      icon: ChipTabar(title: tabTitle, count: groupedData[tabTitle]?.length ?? 0));
                   }).toList()),
             ),
           ),

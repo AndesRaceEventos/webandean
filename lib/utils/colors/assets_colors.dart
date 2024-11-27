@@ -54,8 +54,8 @@ class AppColors {
 
  static Color getColorByIndex({ 
       required int index, 
-      Color colorPar = AppColors.primaryRed, 
-      Color colorImpar = AppColors.primaryWhite
+      Color colorPar = const Color(0xFFECE8E9), 
+      Color colorImpar = AppColors.menuIconColor
       }) {
    
     return index % 2 == 0 ?  

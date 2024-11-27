@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-import 'package:webandean/utils/button/asset_buton_widget.dart';
-import 'package:webandean/utils/colors/assets_colors.dart';
-import 'package:webandean/utils/layuot/assets_scroll_web.dart';
 import 'package:webandean/utils/text/assets_textapp.dart';
 
 class TipoCambioProvider with ChangeNotifier {
@@ -150,26 +146,26 @@ Map<String, Map<String, dynamic>> obtenerTotalesDistribucionPorMoneda(
       return {
       'USD': {
         'valor': valorUSD,
-        'descripcion': 'Suma de Registros en dólares',
+        'descripcion': 'Suma de Registros existentes en dólares',
         'sufijo': '\$ ',
         'color': const Color(0xFF9AD09C),
       },
       'PEN': {
         'valor':  valorPEN,
-        'descripcion': 'Suma de Registros en soles',
+        'descripcion': 'Suma de Registros existentes en soles',
         'sufijo': 'S/. ',
         'color':const Color(0xFFDFA0AF),
       },
       'TOTAL.PEN': {
         'valor':  totalEnSoles,
-        'descripcion': 'Total general en soles',
+        'descripcion': 'Total general acumulado en soles',
          'sufijo': 'S/. ',
         'color': const Color(0xFFA0D0DA),
       },
       'TOTAL.USD': {
         'valor':  totalEnDolares,
         'sufijo': '\$ ',
-        'descripcion': 'Total general en dólares',
+        'descripcion': 'Total general acumulado en dólares',
         'color': const Color(0xFFC1B2D6),
       },
     };
@@ -414,215 +410,3 @@ class SumaTotalWidget extends StatelessWidget {
 
 
 
-
-class CaruselPrecioCalculados extends StatelessWidget {
-  const CaruselPrecioCalculados({super.key, required this.listaProducto});
-  final List<dynamic> listaProducto;
-
-  @override
-  Widget build(BuildContext context) {
-    // Obtener el provider del tipo de cambio
-    final sunatTipocambio = Provider.of<TipoCambioProvider>(context, listen: false);
-    // Llama al método global para obtener los totales
-    final totalesDistribucion = sunatTipocambio.obtenerTotalesDistribucionPorMoneda(context, listaProducto);
-
-    return ScrollWeb(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: totalesDistribucion.entries.map((entry) {
-            final String key = entry.key; // Identificador de moneda o total
-            final Map<String, dynamic> value = entry.value; // Detalles asociados
-      
-            // Si el valor es null o 0, no mostrar el elemento
-            if (value['valor'] == null || value['valor'] == 0.0) {
-              return SizedBox.shrink();
-            }
-      
-            return Container(
-              // width: 120,
-              margin: EdgeInsets.symmetric(horizontal: 4),
-              child: AppIconButoonELegant(
-                height: 50,
-                tooltip: value['descripcion'],
-                colorButon: value['color'],
-                icon: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    P3Text(
-                      text: key,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                    P1Text(
-                      text: "${value['sufijo']}${value['valor'].toStringAsFixed(2)}",
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.menuTextDark,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
-  
-}
-
-class CarruselPreciosCalculadosCategoria extends StatelessWidget {
-  const CarruselPreciosCalculadosCategoria({super.key, required this.listaProducto, 
-  // required this.title
-  });
-  final List<dynamic> listaProducto;
-  // final String title; //categoria 
-  @override
-  Widget build(BuildContext context) {
-      // Obtener el provider del tipo de cambio
-        final sunatTipocambio = Provider.of<TipoCambioProvider>(context, listen: false);
-        // Llama al método global para obtener los totales
-        final totalesDistribucion = sunatTipocambio.obtenerTotalesDistribucionPorMoneda(context, listaProducto);
-        // Extraer los valores específicos
-        final totalEnSoles = totalesDistribucion['TOTAL.PEN']?['valor'];
-        final totalEnDolares = totalesDistribucion['TOTAL.USD']?['valor'];
-        
-        final dataChipset = {
-          // 'Categoria': '${categoria}',
-          'TOTAL EN SOLES':'S/. ${totalEnSoles.toStringAsFixed(2)}',
-          'TOTAL EN DÓLARES':'\$ ${totalEnDolares.toStringAsFixed(2)}',
-        };
-       
-         return ScrollWeb(
-          child: Column(
-            children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: dataChipset.entries.map((entry) {
-                    final String key = entry.key;
-              
-                    return AppIconButoonELegant(
-                      height: 50,
-                      colorButon: AppColors.menuTheme,
-                      icon: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          P3Text(
-                            text: key,
-                            color: AppColors.menuIconColor,
-                            height: 1,
-                          ),
-                          H1Text(
-                            text: "${entry.value}",
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-        );
-                              
-                    
-  }
-}
-
-
-
-class CarruselProductosActivosComprar extends StatelessWidget {
-  const CarruselProductosActivosComprar({super.key, required this.listaProducto});
-  final List<dynamic> listaProducto;
-  @override
-  Widget build(BuildContext context) {
-          // Obtener el provider del tipo de cambio
-        final sunatTipocambio = Provider.of<TipoCambioProvider>(context, listen: false);
-        // Llama al método global para obtener los totales
-        final totalesDistribucion = sunatTipocambio.calcularTotalParaCompra(listaProducto);
-        // Extraer los valores específicos
-        final totalEnSoles = totalesDistribucion['TOTAL.PEN'] ?? 0;
-        final totalEnDolares = totalesDistribucion['TOTAL.USD'] ?? 0;
-        final totalComoprar = totalesDistribucion['TOTAL.COMPRAR'] ?? 0;
-
-        final dataChipset = {
-          'TOTAL EN SOLES':'S/. ${totalEnSoles.toStringAsFixed(2)}',
-          'TOTAL EN DÓLARES':'\$ ${totalEnDolares.toStringAsFixed(2)}',
-        };
-         return ScrollWeb(
-          child: Column(
-            children: [
-            
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: dataChipset.entries.map((entry) {
-                    // final String key = entry.key;
-              
-                    return AppIconButoonELegant(
-                      height: 50,
-                      colorButon: AppColors.menuTheme,
-                      icon: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          P3Text(
-                            text: 'TOTAL EN COMPRAS',//key,
-                            color: AppColors.menuIconColor,
-                            height: 1,
-                          ),
-                          H1Text(
-                            text: "${entry.value}",
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-              if(totalComoprar != 0)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Chip(
-                  backgroundColor: const Color.fromARGB(255, 213, 235, 154),
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 4),
-                  visualDensity: VisualDensity.compact,
-                  // avatar: P1Text(text: '🚨'),
-                  label: RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: const Color(0xFF600D07),
-                      ),
-                      children: [
-                        TextSpan(
-                          text: '🚨 ${totalComoprar}', // Número grande
-                          style: TextStyle(
-                            fontSize: 14, // Número más grande
-                            fontWeight: FontWeight.bold, // Puedes ajustar el grosor si quieres
-                          ),
-                        ),
-                        TextSpan(
-                          text: '\npara comprar', // Texto pequeño
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        );
-                              
-                    
-  }
-}

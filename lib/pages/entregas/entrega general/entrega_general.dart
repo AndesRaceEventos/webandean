@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webandean/utils/responsiveTable/search_transition/search_view_global.dart';
 import 'package:webandean/pages/entregas/entrega%20general/idRelation%20expand/config_values_idrelations.dart';
 
 import 'package:webandean/utils/poketbase/get_filterpoketbase.dart';
 import 'package:webandean/utils/button/asset_buton_widget.dart';
-import 'package:webandean/utils/colors/assets_colors.dart';
 import 'package:webandean/utils/dialogs/assets_dialog.dart';
 import 'package:webandean/utils/responsiveTable/title_table/title_tabbar.dart';
 import 'package:webandean/utils/responsiveTable/title_table/title_table.dart';
@@ -14,7 +14,6 @@ import 'package:webandean/utils/files%20assset/assets-svg.dart';
 import 'package:webandean/utils/layuot/assets_circularprogrees.dart';
 import 'package:webandean/utils/layuot/assets_scroll_web.dart';
 import 'package:webandean/utils/text/assets_textapp.dart';
-import 'package:webandean/utils/textfield/decoration_form.dart';
 
 import 'package:webandean/utils/gridV%20chart/p_gridview_chert.dart';
 import 'package:webandean/utils/responsiveTable/responsive_table.dart';
@@ -98,15 +97,11 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
     }
      
     return  groupedData.keys.isEmpty
-        ? Center(
-          child: AppIconButoonELegant(
-          colorButon: AppColors.menuIconColor,
-          colorlabel: AppColors.menuHeaderTheme,
-          onPressed: () => isSeachVisible(dataProvider, listProductos),
-          label: 'No hay resultados, ¿otra búsqueda? 🔍👀',
-          icon: Icon(Icons.close, size: 30, color: AppColors.menuHeaderTheme)))
-
-        : DefaultTabController(
+         ? Erro404Page(
+            onPressed: () => isSeachVisible(dataProvider, listProductos),
+        )
+        : 
+        DefaultTabController(
       length: groupedData.keys.length,
        initialIndex: selectedIndex,
       child: Scaffold(
@@ -118,39 +113,17 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
               elevation: 0,
               surfaceTintColor: Colors.transparent,
               // centerTitle: true,
-              title: AssetsAnimationSwitcher(
-                isTransition: true,
-                duration: 700,
-                child: isSearch
-                    ? Container(
-                      constraints: BoxConstraints(maxWidth: 350, maxHeight: 45),
-                      child: TextField(
-                          controller: _filterseachController,
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 1.5),
-                          decoration: AssetDecorationTextField.decorationTextFieldRectangle(
-                            hintText: 'Escriba aquí',
-                            labelText: 'Buscar',
-                            fillColor: Colors.white,
-                            prefixIcon: Icon(Icons.search),
-                            suffixIcon: IconButton(
-                              onPressed: () => isSeachVisible(dataProvider, listProductos),
-                              icon: Icon(Icons.close, size: 20))
-                          ),
-                          //Fitrar mientras escribes 
-                          onChanged: (value) => dataProvider.setSearchText(value, dataProvider.listProductos),
-                          //TODOS presionar enter para buscar
-                          // onSubmitted: (value) {
-                          //   dataParticipantes.setSearchText(
-                          //       value, dataParticipantes.listProductos);
-                          // },
-                        ),
-                    )
-                    : TitleTableSlected(
-                        selectedProduct: _selectedProduct,
-                        listProductos: listProductos, 
-                        istransition: istransition,//is tabla o image 
-                         onTap: () => isSeachVisible(dataProvider, listProductos),),
-              ),
+              title: SearchIstransitionItem2(
+                controller: _filterseachController,
+                isSearch: isSearch ,
+                onCloseSeach: () => isSeachVisible(dataProvider, listProductos),
+                onSearch:  (value) => dataProvider.setSearchText(value, dataProvider.listProductos),
+                child: TitleTableSlected(
+                  selectedProduct: _selectedProduct,
+                  listProductos: listProductos, 
+                  istransition: istransition,//is tabla o image 
+                   onTap: () => isSeachVisible(dataProvider, listProductos),),
+                ),
               actions: [
                 ClasificarButton(
                   keyJson: '${dataProvider.collectionName}', //ESPECIFICAR
@@ -193,15 +166,7 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
                         ? AssetsCircularProgreesIndicator()
                         : AppSvg().refreshSvg),
               ],
-              bottom: TabBar(
-                  dividerColor: Colors.transparent,
-                  indicatorColor: AppColors.warningColor,
-                  isScrollable: true,
-                  labelPadding: EdgeInsets.only(right: 5, bottom: 3),
-                  indicatorPadding: EdgeInsets.all(0),
-                  overlayColor: WidgetStatePropertyAll(Colors.transparent),
-                  indicatorWeight: 1,
-                  // dividerHeight: 0,
+              bottom: TabBarCustom(
                  onTap: (index) {
                   setState(() {
                     selectedIndex = index; // Actualiza el índice seleccionado
@@ -212,10 +177,7 @@ class _PageResponsiveProductosState extends State<_PageResponsiveProductos> {
                     return Tab(
                       iconMargin: EdgeInsets.all(0),
                       height: 40,
-                      icon: TextTabBarTable(
-                        groupedData: groupedData,
-                        tabTitle: tabTitle,
-                      ),
+                      icon: ChipTabar(title: tabTitle, count: groupedData[tabTitle]?.length ?? 0),
                     );
                   }).toList()),
             ),
@@ -356,9 +318,7 @@ class AssetGetFilterPoketbase extends StatelessWidget {
         ),
         
         
-        GetFiterWidget(
-          dataProvider: dataProvider,
-        ),
+        GetFiterWidget( dataProvider: dataProvider),
         GetExpandSortWidget(dataProvider: dataProvider),
       ],
     );

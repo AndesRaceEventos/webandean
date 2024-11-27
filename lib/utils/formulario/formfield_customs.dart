@@ -1268,7 +1268,7 @@ class FormWidgets {
            decoration: AssetDecorationTextField.decorationTextFieldRectangle(
                 labelText : 'añadir nuevo registro',
                 hintText : 'Escribe aqui',
-                suffixIcon: Icon(Icons.search, size: 16),
+                suffixIcon: AppSvg(width: 20).createFilledSvg,
                 prefixIcon: textEditingController.text.isEmpty
                     ? null
                     : IconButton(
@@ -1433,7 +1433,7 @@ class FormWidgets {
           child: Material(
             elevation: 4.0,
             child: Container(
-              width: 300,
+              constraints: BoxConstraints(maxWidth: 350),
               // child: ListView(
               //   padding: EdgeInsets.symmetric(vertical: 8),
               //   children: options.map((dynamic producto) {
